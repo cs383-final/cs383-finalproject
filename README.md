@@ -39,12 +39,14 @@ The second phase of our project has a number of details that have yet to be
 clarified. We plan on using our simulation engine for experimentally evaluating
 some swarm-based flocking technique; the nature of this technique will
 be decided as our project progresses. Possibilities include:
+
 - Formation optimization for obstacle avoidance: Can our swarm learn formations
   that optimizes their ability to avoid obstacles? What do these formations look
   like, and how much tolerance does our flock have for disturbances in its
   formation?
 - Voting-based leader selection: Most flocks include some kind of leader agent.
   We can explore voting- or auction-based techniques for selection of this leader.
+
 We anticipate that this list of options will be expanded given more familiarity
 with the software structure of our agents, and the parameters that are required
 for basic flocking capabilies.
