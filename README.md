@@ -18,13 +18,13 @@ language proficiency between the two of us. While the details of the
 experimentation phase of our project need to be refined, we know that our
 simulation must have support for the following:
 
-- Swarm simulation: The most fundamental component of our simulation model will
+- *Swarm simulation*: The most fundamental component of our simulation model will
   contain a group of individual swarm agents that are located in some position
   in a coordinate space, which all advance their state over time.
-- Agent support for learning & pattern formation: A basic, extensible agent
+- *Agent support for learning & pattern formation*: A basic, extensible agent
   class will be built that includes critic and learning elements. This learning
   capability will allow the agents to work together to form flocking patterns.
-- Graphics frontend: A graphics frontend, written using a graphics library such
+- *Graphics frontend*: A graphics frontend, written using a graphics library such
   as OpenGL or SDL, to render the state of the simulation environment, including
   the swarm objects and any other entities in the environment.
 
@@ -40,11 +40,11 @@ clarified. We plan on using our simulation engine for experimentally evaluating
 some swarm-based flocking technique; the nature of this technique will
 be decided as our project progresses. Possibilities include:
 
-- Formation optimization for obstacle avoidance: Can our swarm learn formations
+- *Formation optimization* for obstacle avoidance: Can our swarm learn formations
   that optimizes their ability to avoid obstacles? What do these formations look
   like, and how much tolerance does our flock have for disturbances in its
   formation?
-- Voting-based leader selection: Most flocks include some kind of leader agent.
+- *Voting-based leader selection*: Most flocks include some kind of leader agent.
   We can explore voting- or auction-based techniques for selection of this leader.
 
 We anticipate that this list of options will be expanded given more familiarity
