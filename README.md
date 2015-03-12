@@ -29,7 +29,7 @@ simulation must have support for the following:
   the swarm objects and any other entities in the environment.
 
 We intend to write our simulation engine using the Model-View-Controller
-patters, which will allow for extensible, loosely-coupled components. This is
+pattern, which will allow for extensible, loosely-coupled components. This is
 desirable because the experimentation phase of our project will likely require
 extensions to the learning capabilities of the agent class, or other extensions
 such as environmental obstacles.
