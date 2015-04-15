@@ -19,8 +19,8 @@ data Boid = Boid { position :: !Point
 
 type Update = Boid -> Boid
 type Perception = [Boid]
-type Agent = Perception -> Update
+type Strategy = Perception -> Update
 
-simpleAgent :: Agent
+simpleStrategy :: Strategy
 --          :: [Boid] -> Boid -> Boid
-simpleAgent _ _ = undefined
+simpleStrategy _ _ = undefined
