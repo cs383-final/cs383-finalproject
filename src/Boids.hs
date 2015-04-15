@@ -16,3 +16,11 @@ data Boid = Boid { position :: !Point
                  , radius   :: !Radius
                  }
   deriving (Show)
+
+type Update = Boid -> Boid
+type Perception = [Boid]
+type Agent = Perception -> Update
+
+simpleAgent :: Agent
+--          :: [Boid] -> Boid -> Boid
+simpleAgent _ _ = undefined
