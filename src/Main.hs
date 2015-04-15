@@ -2,15 +2,16 @@ module Main where
 ------------------------------------------------------------------------
 
 import Boids
+
 ------------------------------------------------------------------------
 
--- A global world state is just a list of boids.
+-- |A global world state is just a list of 'Boids'.
 type World  = [Boid]
 
--- Action update for a Boid. The Update function should map this across the boids
+-- |Action update for a 'Boid'. The 'update' function should map this across the boids
 type Action = World -> (Boid -> Boid) 
 
--- Update the entire world state by mapping an Action across each Boid
+-- |Update the entire world state by mapping an 'Action' across each 'Boid'
 update :: Action -> World -> World
 update a w = map a w
 
