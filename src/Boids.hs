@@ -21,6 +21,6 @@ type Update = Boid -> Boid
 type Perception = [Boid]
 type Strategy = Perception -> Update
 
-simpleStrategy :: Strategy
---          :: [Boid] -> Boid -> Boid
-simpleStrategy _ _ = undefined
+emptyStrategy :: Strategy
+           -- :: [Boid] -> Boid -> Boid
+emptyStrategy _ b = b
