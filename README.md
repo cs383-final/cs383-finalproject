@@ -1,5 +1,7 @@
 # CS383 Final Project - Willem Yarbrough & Hawk Weisman
 
+[![Build Status](https://travis-ci.org/cs383-final/cs383-finalproject.svg?branch=master)](https://travis-ci.org/cs383-final/cs383-finalproject)
+
 ## Project Proposal
 
 For the final project, we intend to investigate swarming and flocking behavior
