@@ -28,4 +28,4 @@ initWorld = replicate 3 $ Boid origin origin zero 10.0
   where origin = V3 0 0 0
 
 main :: IO ()
-main = mapM_ print $ take 3 $ iterate (update boidstep) initWorld
+main = mapM_ print $ take 3 $ iterate (update emptystep) initWorld
