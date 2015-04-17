@@ -24,3 +24,13 @@ type Strategy = Perception -> Update
 emptyStrategy :: Strategy
            -- :: [Boid] -> Boid -> Boid
 emptyStrategy _ b = b
+
+
+separate :: [Boid] -> Vector
+separate = undefined
+
+cohere :: [Boid] -> Vector
+cohere = undefined
+
+align :: [Boid] -> Vector
+align = undefined
