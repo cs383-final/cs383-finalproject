@@ -19,7 +19,7 @@ update :: Action -> World -> World
 update a w = map (a w) w
 
 emptyStep :: Action
-emptyStep w b = emptyStrategy (neighborhood w b) b
+emptyStep w b = emptyBehaviour (neighborhood w b) b
 
 neighborhood :: World -> Boid -> Perception
 neighborhood _ _ = []  -- TODO
