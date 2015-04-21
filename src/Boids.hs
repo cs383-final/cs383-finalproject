@@ -33,7 +33,7 @@ positions = map position
 -- |Find the centre of a list of boids
 centre :: [Boid] -> Vector
 centre boids =
-    let m = fromIntegral (length boids) :: Float
+    let m = fromIntegral $ length boids :: Float
     in sumV $ map (^/ m) $ positions boids
 
 -- |Find the separation steer vector for a boid given a neighborhood.
@@ -56,5 +56,9 @@ cohesion self neighbors =
     let p = position self
     in (centre neighbors) - p
 
+-- |Find the alignment steer vector for a boid given a neighborhood.
 alignment :: Boid -> [Boid] -> Vector
-alignment = undefined
+alignment _ [] = V3 0 0 0
+alignment self =
+    let m = fromIntegral . length  :: Float
+    in ^/ m . sumV . map (velocity)
