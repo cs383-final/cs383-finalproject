@@ -25,12 +25,14 @@ emptyBehaviour :: Behaviour
             -- :: [Boid] -> Boid -> Boid
 emptyBehaviour _ b = b
 
+positions :: [Boid] -> [Vector]
+positions = map position
 
-separate :: [Boid] -> Vector
-separate = undefined
+separation :: [Boid] -> Vector
+separation = undefined
 
-cohere :: [Boid] -> Vector
-cohere = undefined
+cohesion :: [Boid] -> Vector
+cohesion = undefined
 
-align :: [Boid] -> Vector
-align = undefined
+alignment :: [Boid] -> Vector
+alignment = undefined
