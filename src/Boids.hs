@@ -19,11 +19,11 @@ data Boid = Boid { position :: !Point
 
 type Update = Boid -> Boid
 type Perception = [Boid]
-type Strategy = Perception -> Update
+type Behaviour = Perception -> Update
 
-emptyStrategy :: Strategy
-           -- :: [Boid] -> Boid -> Boid
-emptyStrategy _ b = b
+emptyBehaviour :: Behaviour
+            -- :: [Boid] -> Boid -> Boid
+emptyBehaviour _ b = b
 
 
 separate :: [Boid] -> Vector
