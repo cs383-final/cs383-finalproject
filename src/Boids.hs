@@ -33,8 +33,8 @@ positions = map position
 -- |Find the centre of a list of boids
 centre :: [Boid] -> Vector
 centre boids =
-    let m = length boids in
-    sumV (map (^/ m) (positions boids))
+    let m = fromIntegral (length boids) :: Float
+    in sumV (map (^/ m) (positions boids))
 
 -- |Find the separation steer vector for a boid given a neighborhood.
 -- |
