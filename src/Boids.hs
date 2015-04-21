@@ -34,7 +34,7 @@ positions = map position
 centre :: [Boid] -> Vector
 centre boids =
     let m = length boids in
-    sumV . map(^/ m) boids
+    sumV . map(^/ m) . boids positions
 
 -- |Find the separation steer vector for a boid given a neighborhood.
 -- |
@@ -44,7 +44,7 @@ centre boids =
 separation :: Boid -> [Boid] -> Vector
 separation self neighbors =
     let p = self position in
-    sumV . map(^-^ p) . positions neighbors
+    sumV . map(^-^ p) . neighbors positions
 
 -- |Find the cohesion steer vector for a boid given a neighborhood.
 -- |
@@ -52,7 +52,9 @@ separation self neighbors =
 -- |for the visible neighborhood. Then, the cohesion vector /k/i is calculated
 -- |by subtracting the current position /p/i from /c/i
 cohesion :: Boid -> [Boid] -> Vector
-cohesion self neighbors = (centre neighbors) - self position
+cohesion self neighbors =
+    let p = self position in
+    (centre neighbors) - p
 
 alignment :: Boid -> [Boid] -> Vector
 alignment = undefined
