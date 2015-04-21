@@ -43,7 +43,7 @@ centre boids =
 -- |negative sum of these vectors.
 separation :: Boid -> [Boid] -> Vector
 separation self neighbors =
-    let p = self position in
+    let p = position self in
     sumV (map (^-^ p) (neighbors positions))
 
 -- |Find the cohesion steer vector for a boid given a neighborhood.
@@ -53,7 +53,7 @@ separation self neighbors =
 -- |by subtracting the current position /p/i from /c/i
 cohesion :: Boid -> [Boid] -> Vector
 cohesion self neighbors =
-    let p = self position in
+    let p = position self in
     (centre neighbors) - p
 
 alignment :: Boid -> [Boid] -> Vector
