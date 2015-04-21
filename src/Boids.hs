@@ -54,7 +54,7 @@ separation self neighbors =
 cohesion :: Boid -> [Boid] -> Vector
 cohesion self neighbors =
     let p = position self
-    in (centre neighbors) - p
+    in centre neighbors - p
 
 -- |Find the alignment steer vector for a boid given a neighborhood.
 alignment :: Boid -> [Boid] -> Vector
