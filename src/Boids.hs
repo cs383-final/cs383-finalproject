@@ -28,11 +28,23 @@ emptyBehaviour _ b = b
 positions :: [Boid] -> [Vector]
 positions = map position
 
-separation :: [Boid] -> Vector
+
+-- |Find the centre of a list of boids
+centre :: [Boid] -> Vector
+centre boids =
+    let m = length boids in
+    sumV . map(^/ m) boids
+
+separation :: Boid -> [Boid] -> Vector
 separation = undefined
 
-cohesion :: [Boid] -> Vector
-cohesion = undefined
+-- |Find the cohesion vector for a boid given a neighborhood.
+-- |
+-- |Cohesion is calculated in two steps. First, the centre /c/i is calculated
+-- |for the visible neighborhood. Then, the cohesion vector /k/i is calculated
+-- |by subtracting the current position /p/i from /c/i
+cohesion :: Boid -> [Boid] -> Vector
+cohesion self neighbors = (centre neighbors) - self position
 
-alignment :: [Boid] -> Vector
+alignment :: Boid -> [Boid] -> Vector
 alignment = undefined
