@@ -17,9 +17,27 @@ data Boid = Boid { position :: !Point
                  }
   deriving (Show)
 
+-- | An Update function maps a 'Boid' to a new 'Boid'.
 type Update     = Boid -> Boid
+
+-- | A 'Boid' percieves the environment as a list of 'Boid's.
 type Perception = [Boid]
+
+-- | A Behaviour function maps a 'Perception' of the environment to
+--  a function for 'Update'ing a 'Boid''s position.
 type Behaviour  = Perception -> Update
+
+-- | Weight coefficients applied to control the influence of each
+-- steer vector on a 'Boid'.
+--
+--      - The first coefficient, /S/, controls the weight of the
+--        'separation' steer vector
+--
+--      - The second coefficient, /C/, controls the weight of the
+--        'cohesion' steer vector
+--
+--      - The third coefficient, /M/, controls the weight of the
+--        'alignment' steer vector
 type Weights    = (Float,Float,Float)
 
 emptyBehaviour :: Behaviour
@@ -43,12 +61,15 @@ steer (s, c, m) neighbors self =
         p'   = p ^+^ v' -- TODO: a speed coefficient could be added here
     in self { position = p', velocity = v'}
 
-positions :: [Boid] -> [Vector]
+-- | Extract the positions from a list of 'Boid's
+positions :: Perception -> [Vector]
+       -- :: [Boid] -> V3 Float
 positions = map position
 
 
 -- |Find the centre of a list of 'Boid's
-centre :: [Boid] -> Vector
+centre :: Perception -> Vector
+    -- :: [Boid] -> V3 Float
 centre boids =
     let m = fromIntegral $ length boids :: Float
     in sumV $ map (^/ m) $ positions boids
@@ -61,7 +82,8 @@ centre boids =
 -- The separation steer vector /s/i can be computed simply by summing the
 -- boid's position /p/i against each other position /p/j and taking the
 -- negative sum of these vectors.
-separation :: Boid -> [Boid] -> Vector
+separation :: Boid -> Perception -> Vector
+        -- :: Boid -> [Boid] -> V3 Float
 separation self neighbors =
     let p = position self
     in sumV . map (^-^ p) $ positions neighbors
@@ -75,7 +97,8 @@ separation self neighbors =
 -- Cohesion is calculated in two steps. First, the centre /c/i is calculated
 -- for the visible neighborhood. Then, the cohesion vector /k/i is calculated
 -- by subtracting the current position /p/i from /c/i
-cohesion :: Boid -> [Boid] -> Vector
+cohesion :: Boid -> Perception -> Vector
+      -- :: Boid -> [Boid] -> V3 Float
 cohesion self neighbors =
     let p = position self
     in centre neighbors - p
@@ -86,9 +109,11 @@ cohesion self neighbors =
 -- to match velocities with its flock-mates. This force causes the 'Boid's to
 -- speed up or slow down depending on the acceleration of nearby 'Boid's.
 --
--- The alignment vector is calculated as the average of the velocity vectors
--- of this 'Boid''s 'Neighborhood'.
-alignment :: Boid -> [Boid] -> Vector
+-- The alignment vector is calculated as the average of the set of
+-- velocity vectors (/V/) of this 'Boid''s 'neighborhood'. If the cardinality
+-- of /V/ is 0, then the alignment vector is also 0.
+alignment :: Boid -> Perception -> Vector
+       -- :: Boid -> [Boid] -> V3 Float
 alignment _ []           = V3 0 0 0
 alignment self neighbors =
     let m = fromIntegral $ length neighbors :: Float
