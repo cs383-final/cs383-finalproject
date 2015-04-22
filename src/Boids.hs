@@ -12,7 +12,6 @@ type Point  = V3 Float
 type Radius = Float
 
 data Boid = Boid { position :: !Point
-                 , target   :: !Point
                  , velocity :: !Vector
                  , radius   :: !Radius
                  }
@@ -26,6 +25,8 @@ emptyBehaviour :: Behaviour
             -- :: [Boid] -> Boid -> Boid
 emptyBehaviour _ b = b
 
+-- |Behaviour assuming all steer vectors (cohesion, separation, alignment) are
+-- |equally weighted.
 equalWeightBehaviour :: Behaviour
 equalWeightBehaviour neighbors self =
     let v = (velocity self) ^+^ (separation self neighbors) ^+^ (cohesion self neighbors) ^+^ (alignment self neighbors)
