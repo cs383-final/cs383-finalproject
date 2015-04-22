@@ -34,10 +34,10 @@ equalWeightsBehaviour neighbors self = steer (1,1,1) neighbors self
 steer :: Weights -> Behaviour
    -- :: [Boid] -> Boid -> Boid
 steer (s, c, m) neighbors self =
-    let s_i  = s *^ (separation self neighbors)
-        c_i  = c *^ (cohesion self neighbors)
-        m_i  = m *^ (alignment self neighbors)
-        v'   = (velocity self) ^+^ s ^+^ c ^+^ m
+    let s_i  = (fromIntegral s) *^ (separation self neighbors)
+        c_i  = (fromIntegral c) *^ (cohesion self neighbors)
+        m_i  = (fromIntegral m) *^ (alignment self neighbors)
+        v'   = (velocity self) ^+^ s_i ^+^ c_i ^+^ m_i
     in self { position = (position self) ^+^ v', velocity = v'}
 
 positions :: [Boid] -> [Vector]
