@@ -17,9 +17,9 @@ data Boid = Boid { position :: !Point
                  }
   deriving (Show)
 
-type Update = Boid -> Boid
+type Update     = Boid -> Boid
 type Perception = [Boid]
-type Behaviour = Perception -> Update
+type Behaviour  = Perception -> Update
 
 emptyBehaviour :: Behaviour
             -- :: [Boid] -> Boid -> Boid
@@ -28,6 +28,7 @@ emptyBehaviour _ b = b
 -- |Behaviour assuming all steer vectors (cohesion, separation, alignment) are
 -- |equally weighted.
 equalWeightBehaviour :: Behaviour
+                  -- :: [Boid] -> Boid -> Boid
 equalWeightBehaviour neighbors self =
     let v = (velocity self) ^+^ (separation self neighbors) ^+^ (cohesion self neighbors) ^+^ (alignment self neighbors)
     in self { position = (position self) ^+^ v, velocity = v}
@@ -64,7 +65,7 @@ cohesion self neighbors =
 
 -- |Find the alignment steer vector for a boid given a neighborhood.
 alignment :: Boid -> [Boid] -> Vector
-alignment _ [] = V3 0 0 0
+alignment _ []           = V3 0 0 0
 alignment self neighbors =
     let m = fromIntegral $ length neighbors :: Float
     in (^/ m) $ sumV $ map velocity neighbors
