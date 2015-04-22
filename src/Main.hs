@@ -18,18 +18,26 @@ type Action = World -> Boid -> Boid
 update :: Action -> World -> World
 update a w = map (a w) w
 
-emptyStep :: Action
-emptyStep w b = emptyBehaviour (neighborhood w b) b
+inSphere :: Point -> Radius -> Point -> Bool
+      -- :: V3 Float -> Float -> V3 Float -> Bool
+inSphere p_0 r p_i = ((x_i - x)^2 + (y_i - y)^2 + (z_i - z)^2) <= r^2
+    where x_i = p_i ^._x
+          y_i = p_i ^._y
+          z_i = p_i ^._z
+          x   = p_0 ^._x
+          y   = p_0 ^._y
+          z   = p_0 ^._z
+
 
 -- |Find the neighborhood for a given 'Boid'
 neighborhood :: World -> Boid -> Perception
-neighborhood world self = filter inSphere world
-    where inSphere boid = ((xi - x)^2 + (yi - y)^2 + (zi - z)^2) <= r
-        where p  = position boid
-              r  = (radius self)^2
-              xi = p ^._x
-              yi = p ^._y
-              zi = p ^._z
+          -- :: [Boid] -> Boid -> [Boid]
+neighborhood world self = filter (inSphere centre rad) world
+    where centre = position self
+          rad    = radius self
+
+emptyStep :: Action
+emptyStep w b = emptyBehaviour (neighborhood w b) b
 
 initWorld :: World
 initWorld = replicate 3 $ Boid origin zero 10.0
