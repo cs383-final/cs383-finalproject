@@ -25,7 +25,7 @@ neighborhood :: World -> Boid -> Perception
 neighborhood _ _ = []  -- TODO
 
 initWorld :: World
-initWorld = replicate 3 $ Boid origin origin zero 10.0
+initWorld = replicate 3 $ Boid origin zero 10.0
   where origin = V3 0 0 0
 
 main :: IO ()
