@@ -40,6 +40,9 @@ neighborhood world self = filter (\x -> inSphere centre rad $ position x) world
 emptyStep :: Action
 emptyStep w b = emptyBehaviour (neighborhood w b) b
 
+eqWeightStep :: Action
+eqWeightStep w b = equalWeightsBehaviour (neighborhood w b) b
+
 initWorld :: World
 initWorld = replicate 3 $ Boid origin zero 10.0
   where origin = V3 0 0 0
