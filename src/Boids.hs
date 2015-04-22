@@ -20,7 +20,7 @@ data Boid = Boid { position :: !Point
 type Update     = Boid -> Boid
 type Perception = [Boid]
 type Behaviour  = Perception -> Update
-type Weights    = (Int,Int,Int)
+type Weights    = (Float,Float,Float)
 
 emptyBehaviour :: Behaviour
             -- :: [Boid] -> Boid -> Boid
@@ -29,15 +29,15 @@ emptyBehaviour _ b = b
 -- |'Behaviour' assuming all steer vectors
 -- ('cohesion', 'separation', 'alignment') are equally weighted.
 equalWeightsBehaviour :: Behaviour
-equalWeightsBehaviour neighbors self = steer (1,1,1) neighbors self
+equalWeightsBehaviour neighbors self = steer (1.0,1.0,1.0) neighbors self
 
 -- |Compose a 'Behaviour' for a 'Boid' based on a tuple of 'Weights'.
 steer :: Weights -> Behaviour
    -- :: Weights -> [Boid] -> Boid -> Boid
 steer (s, c, m) neighbors self =
-    let s_i  = (fromIntegral s) *^ (separation self neighbors)
-        c_i  = (fromIntegral c) *^ (cohesion self neighbors)
-        m_i  = (fromIntegral m) *^ (alignment self neighbors)
+    let s_i  = s *^ (separation self neighbors)
+        c_i  = c *^ (cohesion self neighbors)
+        m_i  = m *^ (alignment self neighbors)
         v'   = (velocity self) ^+^ s_i ^+^ c_i ^+^ m_i
         p    = position self
         p'   = p ^+^ v' -- TODO: a speed coefficient could be added here
