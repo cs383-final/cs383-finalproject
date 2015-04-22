@@ -20,6 +20,7 @@ data Boid = Boid { position :: !Point
 type Update     = Boid -> Boid
 type Perception = [Boid]
 type Behaviour  = Perception -> Update
+type Weights    = (Int,Int,Int)
 
 emptyBehaviour :: Behaviour
             -- :: [Boid] -> Boid -> Boid
@@ -27,11 +28,17 @@ emptyBehaviour _ b = b
 
 -- |Behaviour assuming all steer vectors (cohesion, separation, alignment) are
 -- equally weighted.
-equalWeightBehaviour :: Behaviour
-                  -- :: [Boid] -> Boid -> Boid
-equalWeightBehaviour neighbors self =
-    let v = (velocity self) ^+^ (separation self neighbors) ^+^ (cohesion self neighbors) ^+^ (alignment self neighbors)
-    in self { position = (position self) ^+^ v, velocity = v}
+equalWeightsBehaviour :: Behaviour
+equalWeightsBehaviour neighbors self = steer (1,1,1) neighbors self
+
+steer :: Weights -> Behaviour
+   -- :: [Boid] -> Boid -> Boid
+steer (s, c, m) neighbors self =
+    let s_i  = s *^ (separation self neighbors)
+        c_i  = c *^ (cohesion self neighbors)
+        m_i  = m *^ (alignment self neighbors)
+        v'   = (velocity self) ^+^ s ^+^ c ^+^ m
+    in self { position = (position self) ^+^ v', velocity = v'}
 
 positions :: [Boid] -> [Vector]
 positions = map position
