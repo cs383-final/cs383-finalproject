@@ -68,4 +68,4 @@ alignment :: Boid -> [Boid] -> Vector
 alignment _ []           = V3 0 0 0
 alignment self neighbors =
     let m = fromIntegral $ length neighbors :: Float
-    in (^/ m) $ sumV $ map velocity neighbors
+    in sumV $ map ((^/ m) . velocity) neighbors
