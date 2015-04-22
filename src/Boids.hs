@@ -64,6 +64,6 @@ cohesion self neighbors =
 -- |Find the alignment steer vector for a boid given a neighborhood.
 alignment :: Boid -> [Boid] -> Vector
 alignment _ [] = V3 0 0 0
-alignment self =
-    let m = fromIntegral . length  :: Float
-    in (^/ m) . sumV . map (velocity)
+alignment self neighbors =
+    let m = fromIntegral $ length neighbors :: Float
+    in (^/ m) $ sumV $ map velocity neighbors
