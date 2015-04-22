@@ -26,8 +26,10 @@ emptyBehaviour :: Behaviour
             -- :: [Boid] -> Boid -> Boid
 emptyBehaviour _ b = b
 
-steer :: Behaviour
-steer neighbors self =
+equalWeightBehaviour :: Behaviour
+equalWeightBehaviour neighbors self =
+    let v = (velocity self) ^+^ (separation self neighbors) ^+^ (cohesion self neighbors) ^+^ (alignment self neighbors)
+    in self { position = (position self) ^+^ v, velocity = v}
 
 positions :: [Boid] -> [Vector]
 positions = map position
