@@ -5,6 +5,7 @@ module Main where
 import Boids
 import Linear.Vector
 import Linear.V3
+import Control.Lens -- sorry
 
 ------------------------------------------------------------------------
 
