@@ -39,7 +39,9 @@ steer (s, c, m) neighbors self =
         c_i  = (fromIntegral c) *^ (cohesion self neighbors)
         m_i  = (fromIntegral m) *^ (alignment self neighbors)
         v'   = (velocity self) ^+^ s_i ^+^ c_i ^+^ m_i
-    in self { position = (position self) ^+^ v', velocity = v'}
+        p    = position self
+        p'   = p ^+^ v' -- TODO: a speed coefficient could be added here
+    in self { position = p', velocity = v'}
 
 positions :: [Boid] -> [Vector]
 positions = map position
