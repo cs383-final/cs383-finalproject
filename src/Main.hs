@@ -21,8 +21,15 @@ update a w = map (a w) w
 emptyStep :: Action
 emptyStep w b = emptyBehaviour (neighborhood w b) b
 
+-- |Find the neighborhood for a given 'Boid'
 neighborhood :: World -> Boid -> Perception
-neighborhood _ _ = []  -- TODO
+neighborhood world self = filter inSphere world
+    where inSphere boid = ((xi - x)^2 + (yi - y)^2 + (zi - z)^2) <= r
+        where p  = position boid
+              r  = (radius self)^2
+              xi = p ^._x
+              yi = p ^._y
+              zi = p ^._z
 
 initWorld :: World
 initWorld = replicate 3 $ Boid origin zero 10.0
