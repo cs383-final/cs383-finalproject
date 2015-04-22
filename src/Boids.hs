@@ -26,6 +26,9 @@ emptyBehaviour :: Behaviour
             -- :: [Boid] -> Boid -> Boid
 emptyBehaviour _ b = b
 
+steer :: Behaviour
+steer neighbors self =
+
 positions :: [Boid] -> [Vector]
 positions = map position
 
@@ -61,4 +64,4 @@ alignment :: Boid -> [Boid] -> Vector
 alignment _ [] = V3 0 0 0
 alignment self =
     let m = fromIntegral . length  :: Float
-    in ^/ m . sumV . map (velocity)
+    in (^/ m) . sumV . map (velocity)
