@@ -33,7 +33,7 @@ inSphere p_0 r p_i = ((x_i - x)^2 + (y_i - y)^2 + (z_i - z)^2) <= r^2
 -- |Find the neighborhood for a given 'Boid'
 neighborhood :: World -> Boid -> Perception
           -- :: [Boid] -> Boid -> [Boid]
-neighborhood world self = filter (inSphere centre rad) world
+neighborhood world self = filter (\x -> inSphere centre rad $ position x) world
     where centre = position self
           rad    = radius self
 
