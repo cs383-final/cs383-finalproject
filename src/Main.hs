@@ -5,6 +5,9 @@ module Main where
 import Boids
 import Linear.Vector
 import Linear.V3
+import Graphics.UI.GLUT hiding (position, Radius)
+import Data.IORef (IORef, newIORef, readIORef, modifyIORef)
+import Control.Concurrent (threadDelay)
 import Control.Lens -- sorry
 
 ------------------------------------------------------------------------
@@ -43,9 +46,34 @@ emptyStep w b = emptyBehaviour (neighborhood w b) b
 eqWeightStep :: Action
 eqWeightStep w b = equalWeightsBehaviour (neighborhood w b) b
 
-initWorld :: World
-initWorld = replicate 3 $ Boid origin zero 10.0
+initWorld :: Int -> World
+initWorld n = replicate n $ Boid origin zero 10.0
   where origin = V3 0 0 0
 
+toGLVertex :: V3 Float -> Vertex3 GLfloat
+toGLVertex (V3 x y z) = Vertex3 (glfloat x) (glfloat y) (glfloat z)
+  where glfloat a = realToFrac a :: GLfloat
+
+animate :: IORef World -> IdleCallback
+animate r = do
+  threadDelay 10000
+  modifyIORef r (update eqWeightStep)
+  postRedisplay Nothing
+
+display :: IORef World -> DisplayCallback
+display r' = do
+  w <- readIORef r'
+  clear [ColorBuffer]
+  putStrLn "render"
+  renderPrimitive Points $ mapM_ (vertex . toGLVertex . position) w
+  flush
+
 main :: IO ()
-main = mapM_ print $ take 3 $ iterate (update emptyStep) initWorld
+main = do
+  initialWindowSize $= Size 500 500
+  _ <- getArgsAndInitialize
+  _ <- createWindow "Hello World"
+  r <- newIORef $ initWorld 10
+  displayCallback $= display r
+  idleCallback $= Just (animate r)
+  mainLoop
