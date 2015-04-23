@@ -47,16 +47,16 @@ emptyBehaviour _ b = b
 -- |'Behaviour' assuming all steer vectors
 -- ('cohesion', 'separation', 'alignment') are equally weighted.
 equalWeightsBehaviour :: Behaviour
-equalWeightsBehaviour neighbors self = steer (1.0,1.0,1.0) neighbors self
+equalWeightsBehaviour = steer (1.0,1.0,1.0)
 
 -- |Compose a 'Behaviour' for a 'Boid' based on a tuple of 'Weights'.
 steer :: Weights -> Behaviour
    -- :: Weights -> [Boid] -> Boid -> Boid
 steer (s, c, m) neighbors self =
-    let s_i  = s *^ (separation self neighbors)
-        c_i  = c *^ (cohesion self neighbors)
-        m_i  = m *^ (alignment self neighbors)
-        v'   = (velocity self) ^+^ s_i ^+^ c_i ^+^ m_i
+    let s_i  = s *^ separation self neighbors
+        c_i  = c *^ cohesion self neighbors
+        m_i  = m *^ alignment self neighbors
+        v'   = velocity self ^+^ s_i ^+^ c_i ^+^ m_i
         p    = position self
         p'   = p ^+^ v' -- TODO: a speed coefficient could be added here
     in self { position = p', velocity = v'}
@@ -115,6 +115,6 @@ cohesion self neighbors =
 alignment :: Boid -> Perception -> Vector
        -- :: Boid -> [Boid] -> V3 Float
 alignment _ []           = V3 0 0 0
-alignment self neighbors =
+alignment _ neighbors =
     let m = fromIntegral $ length neighbors :: Float
     in sumV $ map ((^/ m) . velocity) neighbors
