@@ -21,7 +21,7 @@ data Boid = Boid { position :: Point
 \end{minted}
 
 Note that Haskell does not allow mutation of existing values. Therefore, once a
-Boid is created, it cannot be mutated, and instead updating the Boid’s state
+Boid is created, it cannot be mutated, and instead updating the Boid's state
 requires the creation of an entirely new Boid instance.
 
 Also, in contrast to a corresponding OOP implementation, which might define some Boid behaviour to accompany this basic data structure, this Boid data type is kept distinct from its update method. Instead, we define a type called \mintinline{haskell}|Update|:
