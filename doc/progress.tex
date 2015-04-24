@@ -2,12 +2,18 @@
 \begin{document}
 \MYTITLE{CMPSC 383: Multi-Agent and Robotic Systems}{Final Project Progress Report}
 \MYHEADERS{}
+
+\section{Boids}
+
+Boids is a simple simulation of flocking behaviour which mimics the appearance of a flock of birds~\cite{hartman2006autonomous}.
+
+
 \section{Language Choice}
 
 We chose Haskell as the implementation language for our Boids simulation.
-Haskell is a purely functional language with lazy evaluation. As our class
-experience with implementing Multi-Agent simulations has been solely through an
-Object-Oriented Paradigm, our language choice presented a challenge. Our
+Haskell is a purely functional language with lazy evaluation. It has been observed that Haskell supports the rapid prototyping of software systems, allowing working systems to be implemented quickly and with minimal complexity~\cite{hudak1994haskell}. This observation, along with our previous experience in the language, influenced our choice of Haskell as a platform for our project.
+
+As our class experience with implementing Multi-Agent simulations has been solely through the object-oriented programming paradigm, our language choice presented a challenge, but also a valuable learning experience. Our
 implementation of the Boid agents involves the definition of an abstract data
 type, which contains the position, velocity, and neighborhood radius of an
 individual boid. In Haskell, this is defined as follows:
@@ -23,7 +29,7 @@ Note that Haskell does not allow mutation of existing values. Therefore, once a
 Boid is created, it cannot be mutated, and instead updating the Boid’s state
 requires the creation of an entirely new Boid instance.
 
-Also, in contrast to a corresponding OOP implementation, which might define some Boid behavior to accompany this basic data structure, this Boid data type is kept distinct from its update method. Instead, we define a type called \mintinline{haskell}|Update|:
+Also, in contrast to a corresponding OOP implementation, which might define some Boid behaviour to accompany this basic data structure, this Boid data type is kept distinct from its update method. Instead, we define a type called \mintinline{haskell}|Update|:
 
 \begin{minted}{haskell}
 type Update = Boid -> Boid
@@ -41,4 +47,10 @@ This defines a \mintinline{haskell}|Behaviour| as a function that maps a \mintin
 an update function. These examples demonstrate how implementing a multi-agent
 simulation in a purely-functional language requires a different conception of
 what it means programmatically for an Agent to behave.
+
+\pagebreak
+
+ \bibliographystyle{plain}
+ \bibliography{assets/references}
+
 \end{document}
