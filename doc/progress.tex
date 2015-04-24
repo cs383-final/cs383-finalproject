@@ -3,33 +3,6 @@
 \MYTITLE{CMPSC 383: Multi-Agent and Robotic Systems}{Final Project Progress Report}
 \MYHEADERS{}
 
-\section{Boids}
-
-Boids is a simple simulation of flocking behaviour which mimics the appearance of a flock of birds~\cite{hartman2006autonomous}. It was first described by Craig Reynolds in 1987~\cite{reynolds1987flocks}.
-
-Boids models the behaviour of a flock in as being effected by three primary steering forces: \textit{cohesion}, the tendency of an individual to stay close to the centre of the flock; \textit{separation}, the tendency of an individual to avoid collision with other individuals, and \textit{alignment}, the tendency of an individual to match velocities with its neighbors~\cite{hartman2006autonomous,reynolds1987flocks}. Each of these steering forces is modeled as a vector, which are then summed to compute the position of a given boid at each time interval.
-
-The separation steering vector $\vec{s}_i$ for a given boid $b_i$ may be calculated as the negative sum of the position vector of $b_i$ and each visible boid $b_j$, using the following formula:
-
-\[ \vec{s}_i = - \sum\limits_{\forall b_j \in V_i} (p_i - p_j) \]
-
-where $V_i$ is the set of boids visible by $b_i$ (i.e. the neighborhood)~\cite{hartman2006autonomous}.
-
-The cohesion steering vector $\vec{k}_i$ for a given boid $b_i$ may be calculated by finding the centre of density $c_i$ of the visible boids $V_i$ using the formula
-
-\[ c_i = \sum\limits_{\forall b_j \in V_i} \frac{p_j}{m} \]
-
-where $m$ is the cardinality of $V_i$. The steering vector may then be calculated by subtracting $b_i$'s position from $c_i$~\cite{hartman2006autonomous}:
-
-\[ \vec{k}_i = c_i - p_i \]
-
-Finally, the alignment steering vector $\vec{m}_i$ for a boid $b_i$ may be calculated by averaging the velocities of the set of visible boids $V_i$ using the following formula
-
-\[ \vec{m}_i = \sum\limits_{\forall b_j \in V_i} \frac{\vec{v}_j}{m} \]
-
-where $\vec{v}_j$ is the velocity of $b_j$. If the cardinality of $V_i$ is zero, then $\vec{v}_i = 0$~\cite{hartman2006autonomous}.
-
-
 \section{Language Choice}
 
 We chose Haskell as the implementation language for our Boids simulation.
@@ -70,6 +43,65 @@ an update function. These examples demonstrate how implementing a multi-agent
 simulation in a purely-functional language requires a different conception of
 what it means programmatically for an Agent to behave.
 
+\section{Boids}
+
+Boids is a simple simulation of flocking behaviour which mimics the appearance of a flock of birds~\cite{hartman2006autonomous}. It was first described by Craig Reynolds in 1987~\cite{reynolds1987flocks}.
+
+Boids models the behaviour of a flock in as being effected by three primary steering forces: \textit{cohesion}, the tendency of an individual to stay close to the centre of the flock; \textit{separation}, the tendency of an individual to avoid collision with other individuals, and \textit{alignment}, the tendency of an individual to match velocities with its neighbors~\cite{hartman2006autonomous,reynolds1987flocks}. Each of these steering forces is modeled as a vector, which are then summed to compute the position of a given boid at each time interval.
+
+The separation steering vector $\vec{s}_i$ for a given boid $b_i$ may be calculated as the negative sum of the position vector of $b_i$ and each visible boid $b_j$, using the following formula:
+
+\[ \vec{s}_i = - \sum\limits_{\forall b_j \in V_i} (p_i - p_j) \]
+
+where $V_i$ is the set of boids visible by $b_i$ (i.e. the neighborhood)~\cite{hartman2006autonomous}. In our implementation, this formula corresponds to the following Haskell source code:
+
+\begin{minted}{haskell}
+separation :: Boid -> Perception -> Vector
+        -- :: Boid -> [Boid] -> V3 Float
+separation self neighbors =
+    let p = position self
+    in sumV . map (^-^ p) $ positions neighbors
+\end{minted}
+
+The cohesion steering vector $\vec{k}_i$ for a given boid $b_i$ may be calculated by finding the centre of density $c_i$ of the visible boids $V_i$ using the formula
+
+\[ c_i = \sum\limits_{\forall b_j \in V_i} \frac{p_j}{m} \]
+
+where $m$ is the cardinality of $V_i$. The steering vector may then be calculated by subtracting $b_i$'s position from $c_i$~\cite{hartman2006autonomous}:
+
+\[ \vec{k}_i = c_i - p_i \]
+
+In our implementation, these formulae corresponds to the following Haskell source code:
+
+\begin{minted}{haskell}
+centre :: Perception -> Vector
+    -- :: [Boid] -> V3 Float
+centre boids =
+    let m = fromIntegral $ length boids :: Float
+    in sumV $ map (^/ m) $ positions boids
+
+cohesion :: Boid -> Perception -> Vector
+      -- :: Boid -> [Boid] -> V3 Float
+cohesion self neighbors =
+    let p = position self
+    in centre neighbors - p
+\end{minted}
+
+Finally, the alignment steering vector $\vec{m}_i$ for a boid $b_i$ may be calculated by averaging the velocities of the set of visible boids $V_i$ using the following formula
+
+\[ \vec{m}_i = \sum\limits_{\forall b_j \in V_i} \frac{\vec{v}_j}{m} \]
+
+where $\vec{v}_j$ is the velocity of $b_j$. If the cardinality of $V_i$ is zero, then $\vec{v}_i = 0$~\cite{hartman2006autonomous}.In our implementation, this formula corresponds to the following Haskell source code:
+
+\begin{minted}{haskell}
+alignment :: Boid -> Perception -> Vector
+       -- :: Boid -> [Boid] -> V3 Float
+alignment _ []           = V3 0 0 0
+alignment _ neighbors =
+    let m = fromIntegral $ length neighbors :: Float
+    in (sumV $ map velocity neighbors) ^/ m
+\end{minted}
+\vfill
 \pagebreak
 
  \bibliographystyle{plain}
