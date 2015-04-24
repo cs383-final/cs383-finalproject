@@ -5,7 +5,29 @@
 
 \section{Boids}
 
-Boids is a simple simulation of flocking behaviour which mimics the appearance of a flock of birds~\cite{hartman2006autonomous}.
+Boids is a simple simulation of flocking behaviour which mimics the appearance of a flock of birds~\cite{hartman2006autonomous}. It was first described by Craig Reynolds in 1987~\cite{reynolds1987flocks}.
+
+Boids models the behaviour of a flock in as being effected by three primary steering forces: \textit{cohesion}, the tendency of an individual to stay close to the centre of the flock; \textit{separation}, the tendency of an individual to avoid collision with other individuals, and \textit{alignment}, the tendency of an individual to match velocities with its neighbors~\cite{hartman2006autonomous,reynolds1987flocks}. Each of these steering forces is modeled as a vector, which are then summed to compute the position of a given boid at each time interval.
+
+The separation steering vector $\vec{s}_i$ for a given boid $b_i$ may be calculated as the negative sum of the position vector of $b_i$ and each visible boid $b_j$, using the following formula:
+
+\[ \vec{s}_i = - \sum\limits_{\forall b_j \in V_i} (p_i - p_j) \]
+
+where $V_i$ is the set of boids visible by $b_i$ (i.e. the neighborhood)~\cite{hartman2006autonomous}.
+
+The cohesion steering vector $\vec{k}_i$ for a given boid $b_i$ may be calculated by finding the centre of density $c_i$ of the visible boids $V_i$ using the formula
+
+\[ c_i = \sum\limits_{\forall b_j \in V_i} \frac{p_j}{m} \]
+
+where $m$ is the cardinality of $V_i$. The steering vector may then be calculated by subtracting $b_i$'s position from $c_i$~\cite{hartman2006autonomous}:
+
+\[ \vec{k}_i = c_i - p_i \]
+
+Finally, the alignment steering vector $\vec{m}_i$ for a boid $b_i$ may be calculated by averaging the velocities of the set of visible boids $V_i$ using the following formula
+
+\[ \vec{m}_i = \sum\limits_{\forall b_j \in V_i} \frac{\vec{v}_j}{m} \]
+
+where $\vec{v}_j$ is the velocity of $b_j$. If the cardinality of $V_i$ is zero, then $\vec{v}_i = 0$~\cite{hartman2006autonomous}.
 
 
 \section{Language Choice}
