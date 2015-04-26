@@ -64,8 +64,8 @@ initWorld n = replicate n $ Boid origin vel 500.0
   where origin = V2 0 0
         vel    = V2 1 1
 
-toGLVertex :: V3 Float -> Vertex3 GLfloat
-toGLVertex (V3 x y z) = Vertex3 (glfloat x) (glfloat y) (glfloat z)
+toGLVertex :: V2 Float -> Vertex2 GLfloat
+toGLVertex (V2 x y) = Vertex2 (glfloat x) (glfloat y)
   where glfloat a = realToFrac a :: GLfloat
 
 animate :: IORef World -> IdleCallback
