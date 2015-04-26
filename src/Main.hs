@@ -6,7 +6,8 @@ import Boids
 import Linear.Vector
 import Linear.V3
 import Linear.V2
-import Graphics.UI.GLUT hiding (position, Radius)
+import Graphics.Gloss hiding (Point)
+import Graphics.Gloss.Interface.Pure.Simulate hiding (Point)
 import Data.IORef (IORef, newIORef, readIORef, modifyIORef)
 import Control.Concurrent (threadDelay)
 import Control.Lens -- sorry
@@ -70,34 +71,20 @@ initWorld n = replicate n $ Boid origin vel 500.0
 norm :: Float -> Float -> Float
 norm pos dim = (pos / dim) * 2 - (dim / 2)
 
-toGLVertex :: V2 Float -> Vertex2 GLfloat
-toGLVertex (V2 x y) = Vertex2 (glfloat $ norm x xDim ) (glfloat $ norm y yDim)
-  where glfloat a = realToFrac a :: GLfloat
-        xDim      = 500.0 -- todo: should be global level
-        yDim      = 500.0 -- how does one doglobal constants in haskell?
+drawBoid :: Boid -> Picture
+drawBoid (Boid (V2 x y) _ _) = Translate x y (Circle 5)
 
+drawWorld :: World -> Picture
+drawWorld = Pictures . map drawBoid
 
-animate :: IORef World -> IdleCallback
-animate r = do
-  threadDelay 1000000
-  modifyIORef r (update swarmStep)
-  postRedisplay Nothing
-
-display :: IORef World -> DisplayCallback
-display r' = do
-  w <- readIORef r'
-  clear [ColorBuffer]
-  -- putStrLn "render"
-  mapM_ print w
-  renderPrimitive Points $ mapM_ (vertex . toGLVertex . position) w
-  flush
+advanceWorld :: ViewPort -> Float -> World -> World
+advanceWorld _ _ = update cohesiveStep
 
 main :: IO ()
-main = do
-  initialWindowSize $= Size 500 500
-  _ <- getArgsAndInitialize
-  _ <- createWindow "Hello World"
-  r <- newIORef $ initWorld 10
-  displayCallback $= display r
-  idleCallback $= Just (animate r)
-  mainLoop
+main = simulate
+  (InWindow "Boids" (300, 300) (10, 10))
+  white   -- background color
+  3       -- updates per second
+  (initWorld 10)
+  drawWorld
+  advanceWorld

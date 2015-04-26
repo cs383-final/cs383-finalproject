@@ -23,5 +23,5 @@ executable cs383-finalproject
   build-depends: base >=4.7,
                  linear -any,
                  lens -any,
-                 GLUT -any
+                 gloss >=1.9
   default-language:    Haskell2010
