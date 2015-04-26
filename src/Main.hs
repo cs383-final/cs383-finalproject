@@ -67,9 +67,15 @@ initWorld n = replicate n $ Boid origin vel 500.0
   where origin = V2 0 0
         vel    = V2 1 1
 
+norm :: Float -> Float -> Float
+norm pos dim = (pos / dim) * 2 - (dim / 2)
+
 toGLVertex :: V2 Float -> Vertex2 GLfloat
-toGLVertex (V2 x y) = Vertex2 (glfloat x) (glfloat y)
+toGLVertex (V2 x y) = Vertex2 (glfloat $ norm x xDim ) (glfloat $ norm y yDim)
   where glfloat a = realToFrac a :: GLfloat
+        xDim      = 500.0 -- todo: should be global level
+        yDim      = 500.0 -- how does one doglobal constants in haskell?
+
 
 animate :: IORef World -> IdleCallback
 animate r = do
