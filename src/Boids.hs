@@ -2,13 +2,13 @@ module Boids where
 
 ------------------------------------------------------------------------------
 
-import Linear.V3
+import Linear.V2
 import Linear.Vector
 
 ------------------------------------------------------------------------------
 
-type Vector = V3 Float
-type Point  = V3 Float
+type Vector = V2 Float
+type Point  = V2 Float
 type Radius = Float
 
 data Boid = Boid { position :: !Point
@@ -49,6 +49,9 @@ emptyBehaviour _ b = b
 equalWeightsBehaviour :: Behaviour
 equalWeightsBehaviour = steer (1.0,1.0,1.0)
 
+cohesiveBehaviour :: Behaviour
+cohesiveBehaviour = steer (2.0,1.0,1.0)
+
 -- |Compose a 'Behaviour' for a 'Boid' based on a tuple of 'Weights'.
 steer :: Weights -> Behaviour
    -- :: Weights -> [Boid] -> Boid -> Boid
@@ -63,13 +66,13 @@ steer (s, c, m) neighbors self =
 
 -- | Extract the positions from a list of 'Boid's
 positions :: Perception -> [Vector]
-       -- :: [Boid] -> V3 Float
+       -- :: [Boid] -> V2 Float
 positions = map position
 
 
 -- |Find the centre of a list of 'Boid's
 centre :: Perception -> Vector
-    -- :: [Boid] -> V3 Float
+    -- :: [Boid] -> V2 Float
 centre boids =
     let m = fromIntegral $ length boids :: Float
     in sumV $ map (^/ m) $ positions boids
@@ -98,7 +101,7 @@ separation self neighbors =
 -- for the visible neighborhood. Then, the cohesion vector /k/i is calculated
 -- by subtracting the current position /p/i from /c/i
 cohesion :: Boid -> Perception -> Vector
-      -- :: Boid -> [Boid] -> V3 Float
+      -- :: Boid -> [Boid] -> V2 Float
 cohesion self neighbors =
     let p = position self
     in centre neighbors - p
@@ -113,8 +116,8 @@ cohesion self neighbors =
 -- velocity vectors (/V/) of this 'Boid''s 'neighborhood'. If the cardinality
 -- of /V/ is 0, then the alignment vector is also 0.
 alignment :: Boid -> Perception -> Vector
-       -- :: Boid -> [Boid] -> V3 Float
-alignment _ []           = V3 0 0 0
+       -- :: Boid -> [Boid] -> V2 Float
+alignment _ []        = V2 0 0
 alignment _ neighbors =
     let m = fromIntegral $ length neighbors :: Float
     in (sumV $ map velocity neighbors) ^/ m
