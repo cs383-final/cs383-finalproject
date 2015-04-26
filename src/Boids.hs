@@ -49,6 +49,11 @@ emptyBehaviour _ b = b
 equalWeightsBehaviour :: Behaviour
 equalWeightsBehaviour = steer (1.0,1.0,1.0)
 
+-- |"Swarm behavior can be obtain by setting the velocity matching
+-- (alignment) to zero." ~ Hartman and Beneš, p. 4
+swarmBehaviour :: Behaviour
+swarmBehaviour = steer (1.0,1.0,0.0)
+
 cohesiveBehaviour :: Behaviour
 cohesiveBehaviour = steer (2.0,1.0,1.0)
 

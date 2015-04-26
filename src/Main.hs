@@ -59,6 +59,9 @@ eqWeightStep w b = equalWeightsBehaviour (neighborhood w b) b
 cohesiveStep :: Action
 cohesiveStep w b = cohesiveBehaviour (neighborhood w b) b
 
+swarmStep :: Action
+swarmStep w b = swarmBehaviour (neighborhood w b) b
+
 initWorld :: Int -> World
 initWorld n = replicate n $ Boid origin vel 500.0
   where origin = V2 0 0
@@ -71,7 +74,7 @@ toGLVertex (V3 x y z) = Vertex3 (glfloat x) (glfloat y) (glfloat z)
 animate :: IORef World -> IdleCallback
 animate r = do
   threadDelay 1000000
-  modifyIORef r (update cohesiveStep)
+  modifyIORef r (update swarmStep)
   postRedisplay Nothing
 
 display :: IORef World -> DisplayCallback
