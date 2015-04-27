@@ -64,11 +64,11 @@ steer (s, c, m) neighbors self =
     let s_i  = s *^ separation self neighbors
         c_i  = c *^ cohesion self neighbors
         m_i  = m *^ alignment self neighbors
-        v'   = (velocity self ^+^ (s_i ^+^ c_i ^+^ m_i) ^/ scale )
+        v'   = (velocity self ^+^ (s_i ^+^ c_i ^+^ m_i))
         p    = position self
-        p'   = (p ^+^ v') -- TODO: a speed coefficient could be added here
+        p'   = p ^+^ (v' ^/ speed) -- TODO: a speed coefficient could be added here
     in self { position = p', velocity = v'}
-        where scale = 500
+        where speed = 500
 
 -- | Extract the positions from a list of 'Boid's
 positions :: Perception -> [Vector]
