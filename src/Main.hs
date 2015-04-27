@@ -79,7 +79,12 @@ norm :: Float -> Float -> Float
 norm pos d = (pos / d) * 2 - (d / 2)
 
 drawBoid :: Boid -> Picture
-drawBoid (Boid (V2 x y) _ _) = Translate x y (Circle 5)
+drawBoid (Boid (V2 xpos ypos) (V2 xvel yvel) rad) =
+  Translate xpos ypos $
+  Pictures [ (Circle 2)
+           , (Color red $ Circle rad)
+           , (Color green $ Line [(0,0), (xvel, yvel)])
+           ]
 
 drawWorld :: World -> Picture
 drawWorld = Pictures . map drawBoid
