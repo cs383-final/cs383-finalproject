@@ -1,0 +1,45 @@
+\documentclass{beamer}
+\usepackage{minted}
+\usepackage{amsmath}
+\usetheme[]{Rochester}
+
+\title{Boids!}
+\author[Weisman and Yarbrough]{Hawk Weisman and Willem Yarbrough}
+\institute[Allegheny College]{Department of Computer Science \\ Allegheny College}
+\date{\today}
+
+\begin{document}
+
+\begin{frame}
+  \titlepage
+\end{frame}
+
+\begin{frame}
+    \huge{What are Boids?}\normalsize
+    \begin{itemize}
+        \item %todo: write
+    \end{itemize}
+
+\end{frame}
+
+\begin{frame}
+    \huge{Separation steering vector}\normalsize
+\[ \vec{s}_i = - \sum\limits_{\forall b_j \in V_i} (p_i - p_j) \]
+
+\end{frame}
+
+\begin{frame}
+    \huge{Cohesion steering vector}\normalsize
+\[ c_i = \sum\limits_{\forall b_j \in V_i} \frac{p_j}{m} \]
+
+\[ \vec{k}_i = c_i - p_i \]
+
+\end{frame}
+
+\begin{frame}[fragile]
+    \huge{Alignment steering vector}\normalsize
+    \[ \vec{m}_i = \sum\limits_{\forall b_j \in V_i} \frac{\vec{v}_j}{m} \]
+
+\end{frame}
+
+\end{document}
