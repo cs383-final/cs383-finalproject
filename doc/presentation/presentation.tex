@@ -1,12 +1,14 @@
 \documentclass{beamer}
 \usepackage{minted}
 \usepackage{amsmath}
-\usetheme[]{Rochester}
+\usemintedstyle{trac}
 
-\title{Boids!}
+\title{\huge Boids!}
 \author[Weisman and Yarbrough]{Hawk Weisman and Willem Yarbrough}
 \institute[Allegheny College]{Department of Computer Science \\ Allegheny College}
 \date{\today}
+
+\beamertemplatenavigationsymbolsempty
 
 \begin{document}
 
@@ -17,29 +19,243 @@
 \begin{frame}
     \huge{What are Boids?}\normalsize
     \begin{itemize}
-        \item %todo: write
+        \item An artificial life simulation~\cite{hartman2006autonomous,reynolds1987flocks}
+        \item `Bird-oid' flocking behaviour~\cite{hartman2006autonomous,reynolds1987flocks}
+        \item First described by Craig Reynolds in 1987~\cite{reynolds1987flocks}
     \end{itemize}
-
 \end{frame}
 
 \begin{frame}
-    \huge{Separation steering vector}\normalsize
-\[ \vec{s}_i = - \sum\limits_{\forall b_j \in V_i} (p_i - p_j) \]
-
+    \huge{Why Boids?}\normalsize
+    \begin{itemize}
+        \item Some major appearances:
+        \begin{itemize}
+            \item \textit{Half-Life} (1998)
+            \item \textit{Batman Returns} (1992)
+        \end{itemize}
+        \item Other applications:
+        \begin{itemize}
+            \item Swarm optimization~\cite{cui2009boid}
+            \item Unmanned vehicle guidance~\cite{saska2014swarms,min2011design}
+        \end{itemize}
+    \end{itemize}
 \end{frame}
 
 \begin{frame}
-    \huge{Cohesion steering vector}\normalsize
-\[ c_i = \sum\limits_{\forall b_j \in V_i} \frac{p_j}{m} \]
-
-\[ \vec{k}_i = c_i - p_i \]
+\huge{Our Implementation}\normalsize
+\begin{itemize}
+    \item \textbf{Simulation}: Boids in a toroidal 2D space
+    \item \textbf{Haskell} programming language:
+    \begin{itemize}
+        \item A strongly-typed, lazy, purely functional programming language
+        \item Why Haskell?
+        \begin{itemize}
+            \item Good for rapid prototyping~\cite{hudak1994haskell}
+            \item Modularity~\cite{hughes1989functional}
+            \item Prior experience
+            \item Explore non-OO ways of representing agents
+        \end{itemize}
+    \end{itemize}
+\end{itemize}
 
 \end{frame}
 
 \begin{frame}[fragile]
-    \huge{Alignment steering vector}\normalsize
-    \[ \vec{m}_i = \sum\limits_{\forall b_j \in V_i} \frac{\vec{v}_j}{m} \]
+\huge{Haskell}\normalsize
+\begin{itemize}
+    \item \textbf{Strong, Static Typing}: Compiler errors if types don't match
+    \item \textbf{Lazy Evaluation}: Don't compute until asked to
+    \item \textbf{Purely Functional}: Functions are first-class, no side effects
+\vspace{1cm}
+        \begin{minted}[fontsize=\footnotesize]{haskell}
+foo :: Int -> [Int]
+foo n = take n $ map (*2) [1..]
 
+map :: (a -> b) -> [a] -> [b]
+map _ []     = []
+map f (x:xs) = f x : map f xs
+        \end{minted}
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+    \huge{What is a Boid?}\normalsize
+    \begin{itemize}
+        \item A boid consists of:
+        \begin{itemize}
+            \item A position $p_i$
+            \item A velocity vector $\vec{v}_i$
+            \item A sight radius $r$
+        \end{itemize}
+        \item<2-> In Haskell:
+        \begin{minted}[fontsize=\footnotesize]{haskell}
+type Vector = V2 Float
+type Point  = V2 Float
+type Radius = Float
+
+data Boid = Boid { position :: !Point
+                 , velocity :: !Vector
+                 , radius   :: !Radius
+                 }
+  deriving (Show)
+        \end{minted}
+    \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+    \huge{Boid Behaviour}\normalsize
+    \begin{itemize}
+        \item First, we define some types:
+        \begin{minted}[fontsize=\footnotesize]{haskell}
+type Update     = Boid -> Boid
+type Perception = [Boid]
+type Behaviour  = Perception -> Update
+        \end{minted}
+        \item<2-> Functions for finding a boid's neighborhood:
+        \begin{minted}[fontsize=\footnotesize]{haskell}
+inCircle :: Point -> Radius -> Point -> Bool
+inCircle p_0 r p_i = ((x_i - x)^n + (y_i - y)^n) <= r^n
+  where x_i = p_i ^._x
+        y_i = p_i ^._y
+        x   = p_0 ^._x
+        y   = p_0 ^._y
+        n   = 2 :: Integer
+
+neighborhood :: World -> Boid -> Perception
+neighborhood world self =
+    filter (inCircle cent rad . position) world
+    where cent = position self
+          rad  = radius self
+    \end{minted}
+    \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+    \huge{Separation steering vector}\normalsize
+    \begin{itemize}
+
+    \item Tendency to avoid collisions with other boids
+        \begin{equation*}
+    \vec{s}_i = - \sum\limits_{\forall b_j \in V_i} (p_i - p_j)
+    \end{equation*}
+    \item<2-> In Haskell:
+    \begin{minted}[fontsize=\footnotesize]{haskell}
+separation :: Boid -> Perception -> Vector
+separation self neighbors =
+    let p = position self
+    in negated $
+         sumV $ map (^-^ p) $ positions neighbors
+\end{minted}
+    \end{itemize}
+
+
+\end{frame}
+
+\begin{frame}[fragile]
+\huge{Cohesion steering vector}\normalsize
+    \begin{itemize}
+        \item Tendency to steer towards the centre of visible boids
+        \item Calculated in two steps.
+        \item<2-> \textbf{Step I}: Find the centre:
+            \begin{equation*}
+            c_i = \sum\limits_{\forall b_j \in V_i} \frac{p_j}{m}
+            \end{equation*}
+        \item<3> In Haskell:
+        \begin{minted}[fontsize=\footnotesize]{haskell}
+centre :: Perception -> Vector
+centre boids =
+    let m = fromIntegral $ length boids :: Float
+    in sumV (positions boids) ^/ m
+        \end{minted}
+    \end{itemize}
+
+\end{frame}
+
+\begin{frame}[fragile]
+\huge{Cohesion steering vector}\normalsize
+    \begin{itemize}
+        \item Tendency to steer towards the centre of visible boids
+        \item Calculated in two steps.
+\item<1-> \textbf{Step II}: Find the cohesion vector:
+            \begin{equation*}
+            \vec{k}_i = c_i - p_i
+            \end{equation*}
+        \item<2> In Haskell:
+        \begin{minted}[fontsize=\footnotesize]{haskell}
+cohesion :: Boid -> Perception -> Vector
+cohesion self neighbors =
+    let p = position self
+    in centre neighbors ^-^ p
+        \end{minted}
+    \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+    \huge{Alignment steering vector}\normalsize
+    \begin{itemize}
+    \item Tendency to match velocity with visible boids
+    \begin{equation*}
+    \vec{m}_i = \sum\limits_{\forall b_j \in V_i} \frac{\vec{v}_j}{m}
+    \end{equation*}
+    \item<2-> In Haskell:
+    \begin{minted}[fontsize=\footnotesize]{haskell}
+alignment :: Boid -> Perception -> Vector
+       -- :: Boid -> [Boid]     -> V2 Float
+alignment _ []        = V2 0 0
+alignment _ neighbors =
+    let m = fromIntegral $ length neighbors :: Float
+    in (sumV $ map velocity neighbors) ^/ m
+    \end{minted}
+    \end{itemize}
+\end{frame}
+
+
+\begin{frame}[fragile]
+    \huge{Simulating a boid}\normalsize
+    \begin{enumerate}
+    \item<1-> Velocity update
+    \begin{equation*}
+    \vec{v_i\prime} = \vec{v_i} + S.\vec{s_i} + K.\vec{k_i} + M.\vec{m_i}
+    \end{equation*}
+        Where $S$, $K$, and $M \in [0,1]$
+    \item<2-> Position update
+    \begin{equation*}
+    p\prime_i = p_i + \Delta t\vec{v_i}
+    \end{equation*}
+    \end{enumerate}
+\end{frame}
+
+\begin{frame}[fragile]
+    \huge{Simulating a boid}\normalsize
+    \begin{itemize}
+    \item In Haskell:
+        \begin{minted}{haskell}
+steer :: Weights -> Behaviour
+steer (s, c, m) neighbors self =
+    let s_i  = s *^ separation self neighbors
+        c_i  = c *^ cohesion self neighbors
+        m_i  = m *^ alignment self neighbors
+        v'   = velocity self ^+^ s_i ^+^ c_i ^+^ m_i
+        p    = position self
+        p'   = p ^+^ v'
+    in self { position = p', velocity = v'}
+        \end{minted}
+    \end{itemize}
+\end{frame}
+
+\begin{frame}
+    \huge{A brief demonstration}\normalsize
+\end{frame}
+
+\renewcommand{\pgfuseimage}[1]{\includegraphics[scale=.75]{#1}}
+
+\begin{frame}
+\huge{References}\normalsize
+\tiny{
+
+ \bibliographystyle{plain}
+ \bibliography{../assets/references}
+}
 \end{frame}
 
 \end{document}

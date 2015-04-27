@@ -12,7 +12,6 @@ import Data.IORef (IORef, newIORef, readIORef, modifyIORef)
 import Control.Concurrent (threadDelay)
 import Control.Lens -- sorry
 import Control.Monad.Random
-import System.Random
 import Data.Fixed
 
 ------------------------------------------------------------------------
@@ -104,14 +103,14 @@ advanceWorld dims _ _ = (boundsCheck dims) . update swarmStep
 main :: IO ()
 main = do
 
-  let dims = (800, 800)
+  let dims = (1000, 1000)
 
   pos_x <- evalRandIO (initPos 20)
   pos_y <- evalRandIO (initPos 20)
 
   simulate (InWindow "Boids" dims (0, 0))
     (greyN 0.7)  -- background color
-    5           -- updates per second
+    30           -- updates per second
     (initWorld $ zip pos_x pos_y)
     drawWorld
     (advanceWorld dims)
