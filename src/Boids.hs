@@ -33,7 +33,7 @@ type Behaviour  = Perception -> Update
 --      - The first coefficient, /S/, controls the weight of the
 --        'separation' steer vector
 --
---      - The second coefficient, /C/, controls the weight of the
+--      - The second coefficient, /K/, controls the weight of the
 --        'cohesion' steer vector
 --
 --      - The third coefficient, /M/, controls the weight of the
@@ -60,11 +60,11 @@ cohesiveBehaviour = steer (1.0,0.5,0.5)
 -- |Compose a 'Behaviour' for a 'Boid' based on a tuple of 'Weights'.
 steer :: Weights -> Behaviour
    -- :: Weights -> [Boid] -> Boid -> Boid
-steer (s, c, m) neighbors self =
+steer (s, k, m) neighbors self =
     let s_i  = s *^ separation self neighbors
-        c_i  = c *^ cohesion self neighbors
+        k_i  = k *^ cohesion self neighbors
         m_i  = m *^ alignment self neighbors
-        v'   = velocity self ^+^ (s_i ^+^ c_i ^+^ m_i)
+        v'   = velocity self ^+^ s_i ^+^ k_i ^+^ m_i
         p    = position self
         p'   = p ^+^ (v' ^/ speed)
     in self { position = p', velocity = v'}
