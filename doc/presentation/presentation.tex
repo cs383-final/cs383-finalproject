@@ -117,9 +117,9 @@ cohesion self neighbors =
     \frametitle{\huge{Alignment steering vector}\normalsize}
     \begin{itemize}
     \item Tendency to match velocity with visible boids
-    \begin{equation}
+    \begin{equation*}
     \vec{m}_i = \sum\limits_{\forall b_j \in V_i} \frac{\vec{v}_j}{m}
-    \end{equation}
+    \end{equation*}
     \item In Haskell:
     \begin{minted}{haskell}
 alignment :: Boid -> Perception -> Vector
