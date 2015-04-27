@@ -4,12 +4,10 @@ module Main where
 
 import Boids
 import Model
-import Linear.V3
 import Linear.V2
 import Graphics.Gloss hiding (Point)
 import Graphics.Gloss.Interface.Pure.Simulate hiding (Point)
 import Control.Monad.Random
-import Control.Monad
 
 ------------------------------------------------------------------------
 
