@@ -13,6 +13,7 @@ import Control.Concurrent (threadDelay)
 import Control.Lens -- sorry
 import Control.Monad.Random
 import System.Random
+import Data.Fixed
 
 ------------------------------------------------------------------------
 
@@ -70,12 +71,12 @@ initPos n = sequence $ replicate n $ (getRandomR (-50,50))
 
 initWorld :: [(Float,Float)] -> World
 initWorld = map mkBoid
-  where mkBoid (x,y) = Boid (V2 x y) still radius
+  where mkBoid (x,y) = Boid (V2 x y) still rad
         still        = V2 0 0
-        radius       = 500.0
+        rad          = 100.0
 
 norm :: Float -> Float -> Float
-norm pos dim = (pos / dim) * 2 - (dim / 2)
+norm pos d = (pos / d) * 2 - (d / 2)
 
 drawBoid :: Boid -> Picture
 drawBoid (Boid (V2 x y) _ _) = Translate x y (Circle 5)
@@ -83,18 +84,26 @@ drawBoid (Boid (V2 x y) _ _) = Translate x y (Circle 5)
 drawWorld :: World -> Picture
 drawWorld = Pictures . map drawBoid
 
-advanceWorld :: ViewPort -> Float -> World -> World
-advanceWorld _ _ = update swarmStep
+boundsCheck :: (Int, Int) -> World -> World
+boundsCheck (width, height) = map modBoid
+  where modBoid b@(Boid (V2 x y) _ _) = b { position = V2 (x `mod'` width') (y `mod'` height') }
+        width'  = fromIntegral width
+        height' = fromIntegral height
+
+advanceWorld :: (Int, Int) -> ViewPort -> Float -> World -> World
+advanceWorld dims _ _ = (boundsCheck dims) . update cohesiveStep
 
 main :: IO ()
 main = do
 
+  let dims = (800, 800)
+
   pos_x <- evalRandIO (initPos 20)
   pos_y <- evalRandIO (initPos 20)
 
-  simulate (InWindow "Boids" (300, 300) (10, 10))
-    white   -- background color
-    3       -- updates per second
+  simulate (InWindow "Boids" dims (0, 0))
+    (greyN 0.7)  -- background color
+    5           -- updates per second
     (initWorld $ zip pos_x pos_y)
     drawWorld
-    advanceWorld
+    (advanceWorld dims)
