@@ -22,6 +22,7 @@ executable cs383-finalproject
   -- other-extensions:
   build-depends: base >=4.7,
                  random -any,
+                 MonadRandom -any,
                  linear -any,
                  lens -any,
                  gloss >=1.9
