@@ -44,17 +44,18 @@
 \begin{frame}
 \huge{Our Implementation}\normalsize
 \begin{itemize}
+    \item \textbf{Simulation}: Boids in a toroidal 2D space
     \item \textbf{Haskell} programming language:
     \begin{itemize}
         \item A strongly-typed, lazy, purely functional programming language
-        \item \textbf{Why?}
+        \item Why Haskell?
         \begin{itemize}
             \item Good for rapid prototyping~\cite{hudak1994haskell}
+            \item Modularity~\cite{hughes1989functional}
             \item Prior experience
             \item Explore non-OO ways of representing agents
         \end{itemize}
     \end{itemize}
-    \item \textbf{Our simulation}: Boids in a toroidal 2D space
 \end{itemize}
 
 \end{frame}
@@ -201,7 +202,7 @@ alignment _ neighbors =
 
 \begin{frame}[fragile]
     \huge{Simulating a boid}\normalsize
-    \begin{enumerate}
+    \begin{itemize}
     \item In Haskell:
         \begin{minted}{haskell}
 steer :: Weights -> Behaviour
@@ -214,7 +215,7 @@ steer (s, c, m) neighbors self =
         p'   = p ^+^ v'
     in self { position = p', velocity = v'}
         \end{minted}
-    \end{enumerate}
+    \end{itemize}
 \end{frame}
 
 \begin{frame}
@@ -223,8 +224,11 @@ steer (s, c, m) neighbors self =
 
 \begin{frame}
 \huge{References}\normalsize
+\footnotesize{
+
  \bibliographystyle{plain}
  \bibliography{../assets/references}
+}
 \end{frame}
 
 \end{document}
