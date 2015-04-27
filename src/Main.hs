@@ -82,9 +82,10 @@ drawBoid (Boid (V2 xpos ypos) (V2 xvel yvel) rad) =
            , (Color green $ Line [(0,0), (xvel, yvel)])
            ]
 
-drawWorld :: World -> Picture
-drawWorld = Pictures . map drawBoid
-
+drawWorld :: (Int, Int) -> World -> Picture
+drawWorld (xdim, ydim) = Translate xtrans ytrans . Pictures . map drawBoid
+  where xtrans = - ((fromIntegral xdim)/2)
+        ytrans = - ((fromIntegral ydim)/2)
 boundsCheck :: (Int, Int) -> World -> World
 boundsCheck (width, height) = map modBoid
   where modBoid b@(Boid (V2 x y) _ _) = b { position = V2 (x `mod'` width') (y `mod'` height') }
@@ -106,5 +107,5 @@ main = do
     (greyN 0.7)  -- background color
     30           -- updates per second
     (initWorld $ zip pos_x pos_y)
-    drawWorld
+    (drawWorld dims)
     (advanceWorld dims)
