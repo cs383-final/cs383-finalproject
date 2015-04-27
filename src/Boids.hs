@@ -55,7 +55,7 @@ swarmBehaviour :: Behaviour
 swarmBehaviour = steer (1.0,1.0,0.0)
 
 cohesiveBehaviour :: Behaviour
-cohesiveBehaviour = steer (2.0,1.0,1.0)
+cohesiveBehaviour = steer (1.0,2.0,0.0)
 
 -- |Compose a 'Behaviour' for a 'Boid' based on a tuple of 'Weights'.
 steer :: Weights -> Behaviour
@@ -109,7 +109,7 @@ cohesion :: Boid -> Perception -> Vector
       -- :: Boid -> [Boid] -> V2 Float
 cohesion self neighbors =
     let p = position self
-    in centre neighbors - p
+    in p - (centre neighbors)
 
 -- |Find the alignment steer vector for a boid given a neighborhood.
 --
