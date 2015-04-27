@@ -60,6 +60,24 @@
 
 \end{frame}
 
+\begin{frame}
+\huge{Haskell}\normalsize
+\begin{itemize}
+    \item \textbf{Strong, Static Typing}: Compiler errors if types don't match
+    \item \textbf{Lazy Evaluation}: Don't compute until asked to
+    \item \textbf{Purely Functional}: Functions are first-class
+\vspace{1cm}
+        \begin{minted}[fontsize=\footnotesize]{haskell}
+foo :: Int -> [Int]
+foo n = take n $ map (*2) [1..]
+
+map :: (a -> b) -> [a] -> [b]
+map _ []     = []
+map f (x:xs) = f x : map f xs
+        \end{minted}
+\end{itemize}
+\end{frame}
+
 \begin{frame}[fragile]
     \huge{What is a Boid?}\normalsize
     \begin{itemize}
