@@ -8,6 +8,8 @@
 \institute[Allegheny College]{Department of Computer Science \\ Allegheny College}
 \date{\today}
 
+\beamertemplatenavigationsymbolsempty
+
 \begin{document}
 
 \begin{frame}
@@ -19,7 +21,7 @@
     \begin{itemize}
         \item An artificial life simulation~\cite{hartman2006autonomous,reynolds1987flocks}
         \item `Bird-oid' flocking behaviour~\cite{hartman2006autonomous,reynolds1987flocks}
-        \item first described by Craig Reynolds in 1987~\cite{reynolds1987flocks}
+        \item First described by Craig Reynolds in 1987~\cite{reynolds1987flocks}
     \end{itemize}
 \end{frame}
 
@@ -82,6 +84,34 @@ data Boid = Boid { position :: !Point
 \end{frame}
 
 \begin{frame}[fragile]
+    \huge{Boid Behaviour}\normalsize
+    \begin{itemize}
+        \item First, we define some types:
+        \begin{minted}[fontsize=\footnotesize]{haskell}
+type Update     = Boid -> Boid
+type Perception = [Boid]
+type Behaviour  = Perception -> Update
+        \end{minted}
+        \item<2-> Functions for finding a boid's neighborhood:
+        \begin{minted}[fontsize=\footnotesize]{haskell}
+inCircle :: Point -> Radius -> Point -> Bool
+inCircle p_0 r p_i = ((x_i - x)^n + (y_i - y)^n) <= r^n
+  where x_i = p_i ^._x
+        y_i = p_i ^._y
+        x   = p_0 ^._x
+        y   = p_0 ^._y
+        n   = 2 :: Integer
+
+neighborhood :: World -> Boid -> Perception
+neighborhood world self =
+    filter (inCircle cent rad . position) world
+    where cent = position self
+          rad  = radius self
+    \end{minted}
+    \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
     \huge{Separation steering vector}\normalsize
     \begin{itemize}
 
@@ -106,14 +136,18 @@ separation self neighbors =
 \huge{Cohesion steering vector}\normalsize
     \begin{itemize}
         \item Tendency to steer towards the centre of visible boids
-        \item Calculated in two steps:
-                \begin{equation}
-        c_i = \sum\limits_{\forall b_j \in V_i} \frac{p_j}{m}
-        \end{equation}
-        \begin{equation}
-        \vec{k}_i = c_i - p_i
-        \end{equation}
-        \item<2-> In Haskell:
+        \item Calculated in two steps.
+        \begin{enumerate}
+        \item<2-> Find the centre:
+            \begin{equation}
+            c_i = \sum\limits_{\forall b_j \in V_i} \frac{p_j}{m}
+            \end{equation}
+        \item<3-> Calculate vector:
+            \begin{equation*}
+            \vec{k}_i = c_i - p_i
+            \end{equation*}
+        \end{enumerate}
+        \item<4-> In Haskell:
         \begin{minted}[fontsize=\footnotesize]{haskell}
 centre :: Perception -> Vector
 centre boids =
@@ -140,14 +174,53 @@ cohesion self neighbors =
     \item<2-> In Haskell:
     \begin{minted}[fontsize=\footnotesize]{haskell}
 alignment :: Boid -> Perception -> Vector
+       -- :: Boid -> [Boid]     -> V2 Float
 alignment _ []        = V2 0 0
 alignment _ neighbors =
     let m = fromIntegral $ length neighbors :: Float
     in (sumV $ map velocity neighbors) ^/ m
     \end{minted}
     \end{itemize}
-
 \end{frame}
+
+
+\begin{frame}[fragile]
+    \huge{Simulating a boid}\normalsize
+    \begin{enumerate}
+    \item<1-> Velocity update
+    \begin{equation*}
+    \vec{v_i\prime} = \vec{v_i} + S.\vec{s_i} + K.\vec{k_i} + M.\vec{m_i}
+    \end{equation*}
+        Where $S$, $K$, and $M \in [0,1]$
+    \item<2-> Position update
+    \begin{equation*}
+    p\prime_i = p_i + \Delta t\vec{v_i}
+    \end{equation*}
+    \end{enumerate}
+\end{frame}
+
+\begin{frame}[fragile]
+    \huge{Simulating a boid}\normalsize
+    \begin{enumerate}
+    \item In Haskell:
+        \begin{minted}{haskell}
+steer :: Weights -> Behaviour
+steer (s, c, m) neighbors self =
+    let s_i  = s *^ separation self neighbors
+        c_i  = c *^ cohesion self neighbors
+        m_i  = m *^ alignment self neighbors
+        v'   = velocity self ^+^ s_i ^+^ c_i ^+^ m_i
+        p    = position self
+        p'   = p ^+^ v'
+    in self { position = p', velocity = v'}
+        \end{minted}
+    \end{enumerate}
+\end{frame}
+
+\begin{frame}
+    \huge{A brief demonstration}\normalsize
+\end{frame}
+
 \begin{frame}
 \huge{References}\normalsize
  \bibliographystyle{plain}
