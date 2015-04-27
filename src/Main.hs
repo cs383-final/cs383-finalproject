@@ -73,7 +73,7 @@ initWorld :: [(Float,Float)] -> World
 initWorld = map mkBoid
   where mkBoid (x,y) = Boid (V2 x y) still rad
         still        = V2 0 0
-        rad          = 100.0
+        rad          = 50.0
 
 norm :: Float -> Float -> Float
 norm pos d = (pos / d) * 2 - (d / 2)
@@ -96,7 +96,7 @@ boundsCheck (width, height) = map modBoid
         height' = fromIntegral height
 
 advanceWorld :: (Int, Int) -> ViewPort -> Float -> World -> World
-advanceWorld dims _ _ = (boundsCheck dims) . update cohesiveStep
+advanceWorld dims _ _ = (boundsCheck dims) . update swarmStep
 
 main :: IO ()
 main = do
@@ -108,7 +108,7 @@ main = do
 
   simulate (InWindow "Boids" dims (0, 0))
     (greyN 0.7)  -- background color
-    15           -- updates per second
+    30           -- updates per second
     (initWorld $ zip pos_x pos_y)
     drawWorld
     (advanceWorld dims)
