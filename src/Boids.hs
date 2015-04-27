@@ -55,7 +55,7 @@ swarmBehaviour :: Behaviour
 swarmBehaviour = steer (1.0,1.0,0.0)
 
 cohesiveBehaviour :: Behaviour
-cohesiveBehaviour = steer (2.0,1.0,1.0)
+cohesiveBehaviour = steer (1.0,0.5,0.5)
 
 -- |Compose a 'Behaviour' for a 'Boid' based on a tuple of 'Weights'.
 steer :: Weights -> Behaviour

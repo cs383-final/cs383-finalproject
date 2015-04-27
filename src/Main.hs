@@ -96,12 +96,12 @@ boundsCheck (width, height) = map modBoid
         height' = fromIntegral height
 
 advanceWorld :: (Int, Int) -> ViewPort -> Float -> World -> World
-advanceWorld dims _ _ = (boundsCheck dims) . update swarmStep
+advanceWorld dims _ _ = (boundsCheck dims) . update eqWeightStep
 
 main :: IO ()
 main = do
 
-  let dims = (800, 800)
+  let dims = (1000, 1000)
 
   pos_x <- evalRandIO (initPos 20)
   pos_y <- evalRandIO (initPos 20)
