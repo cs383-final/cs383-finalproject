@@ -66,7 +66,7 @@
             \item A velocity vector $\vec{v}_i$
             \item A sight radius $r$
         \end{itemize}
-        \item In Haskell:
+        \item<2-> In Haskell:
         \begin{minted}[fontsize=\footnotesize]{haskell}
 type Vector = V2 Float
 type Point  = V2 Float
@@ -89,7 +89,7 @@ data Boid = Boid { position :: !Point
         \begin{equation*}
     \vec{s}_i = - \sum\limits_{\forall b_j \in V_i} (p_i - p_j)
     \end{equation*}
-    \item In Haskell:
+    \item<2-> In Haskell:
     \begin{minted}[fontsize=\footnotesize]{haskell}
 separation :: Boid -> Perception -> Vector
 separation self neighbors =
@@ -113,7 +113,7 @@ separation self neighbors =
         \begin{equation}
         \vec{k}_i = c_i - p_i
         \end{equation}
-        \item In Haskell:
+        \item<2-> In Haskell:
         \begin{minted}[fontsize=\footnotesize]{haskell}
 centre :: Perception -> Vector
 centre boids =
@@ -137,7 +137,7 @@ cohesion self neighbors =
     \begin{equation*}
     \vec{m}_i = \sum\limits_{\forall b_j \in V_i} \frac{\vec{v}_j}{m}
     \end{equation*}
-    \item In Haskell:
+    \item<2-> In Haskell:
     \begin{minted}[fontsize=\footnotesize]{haskell}
 alignment :: Boid -> Perception -> Vector
 alignment _ []        = V2 0 0
