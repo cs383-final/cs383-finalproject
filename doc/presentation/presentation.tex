@@ -35,8 +35,8 @@
         \end{itemize}
         \item Other applications:
         \begin{itemize}
-            \item Swarm optimization
-            \item Unmanned vehicle guidance
+            \item Swarm optimization~\cite{cui2009boid}
+            \item Unmanned vehicle guidance~\cite{saska2014swarms,min2011design}
         \end{itemize}
     \end{itemize}
 \end{frame}
@@ -160,7 +160,7 @@ centre boids =
         \item Calculated in two steps.
 \item<1-> \textbf{Step II}: Find the cohesion vector:
             \begin{equation*}
-            c_i = \sum\limits_{\forall b_j \in V_i} \frac{p_j}{m}
+            \vec{k}_i = c_i - p_i
             \end{equation*}
         \item<2> In Haskell:
         \begin{minted}[fontsize=\footnotesize]{haskell}
