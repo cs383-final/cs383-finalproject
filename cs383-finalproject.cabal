@@ -15,7 +15,7 @@ build-type:          Simple
 extra-source-files:  README.md
 cabal-version:       >=1.10
 
-executable cs383-finalproject
+executable boids
   hs-source-dirs: src
   main-is: Main.hs
   -- other-modules:
