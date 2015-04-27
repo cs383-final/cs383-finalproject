@@ -108,7 +108,7 @@ main = do
 
   simulate (InWindow "Boids" dims (0, 0))
     (greyN 0.7)  -- background color
-    5           -- updates per second
+    15           -- updates per second
     (initWorld $ zip pos_x pos_y)
     drawWorld
     (advanceWorld dims)
