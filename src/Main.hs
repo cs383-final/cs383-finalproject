@@ -71,8 +71,11 @@ initPos n = sequence $ replicate n $ (getRandomR (-50,50))
 initWorld :: [(Float,Float)] -> World
 initWorld = map mkBoid
   where mkBoid (x,y) = Boid (V2 x y) still rad
-        still        = V2 0 0
-        rad          = 50.0
+        still        = V2 1 1
+        rad          = 100.0
+
+norm :: Float -> Float -> Float
+norm pos d = (pos / d) * 2 - (d / 2)
 
 drawBoid :: Boid -> Picture
 drawBoid (Boid (V2 xpos ypos) (V2 xvel yvel) rad) =
@@ -86,14 +89,18 @@ drawWorld :: (Int, Int) -> World -> Picture
 drawWorld (xdim, ydim) = Translate xtrans ytrans . Pictures . map drawBoid
   where xtrans = - ((fromIntegral xdim)/2)
         ytrans = - ((fromIntegral ydim)/2)
+
+inBounds :: Float -> Float -> Float
+inBounds bound = until (< bound) (subtract bound) . until (0 <=) (+ bound)
+
 boundsCheck :: (Int, Int) -> World -> World
 boundsCheck (width, height) = map modBoid
-  where modBoid b@(Boid (V2 x y) _ _) = b { position = V2 (x `mod'` width') (y `mod'` height') }
-        width'  = fromIntegral width
-        height' = fromIntegral height
+  where modBoid b@(Boid (V2 x y) _ _) = b { position = V2 (inWidth x) (inHeight y) }
+        inWidth  = inBounds $ fromIntegral width
+        inHeight = inBounds $ fromIntegral height
 
 advanceWorld :: (Int, Int) -> ViewPort -> Float -> World -> World
-advanceWorld dims _ _ = (boundsCheck dims) . update cohesiveStep
+advanceWorld dims _ _ = (boundsCheck dims) . update swarmStep
 
 main :: IO ()
 main = do
