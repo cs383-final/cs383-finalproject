@@ -78,7 +78,7 @@ positions = map position
 
 -- |Find the centre of a list of 'Boid's
 centre :: Perception -> Vector
-    -- :: [Boid] -> V2 Float
+    -- :: [Boid]     -> V2 Float
 centre boids =
     let m = fromIntegral $ length boids :: Float
     in sumV (positions boids) ^/ m
@@ -95,8 +95,7 @@ separation :: Boid -> Perception -> Vector
         -- :: Boid -> [Boid]     -> V3 Float
 separation self neighbors =
     let p = position self
-    in
-      negated $ sumV $ map (^-^ p) $ positions neighbors
+    in negated $ sumV $ map (^-^ p) $ positions neighbors
 
 -- |Find the cohesion steer vector for a 'Boid' given a 'Neighborhood'.
 --
@@ -108,7 +107,7 @@ separation self neighbors =
 -- for the visible neighborhood. Then, the cohesion vector /k/i is calculated
 -- by subtracting the current position /p/i from /c/i
 cohesion :: Boid -> Perception -> Vector
-      -- :: Boid -> [Boid] -> V2 Float
+      -- :: Boid -> [Boid]     -> V2 Float
 cohesion self neighbors =
     let p = position self
     in centre neighbors ^-^ p
@@ -123,7 +122,7 @@ cohesion self neighbors =
 -- velocity vectors (/V/) of this 'Boid''s 'neighborhood'. If the cardinality
 -- of /V/ is 0, then the alignment vector is also 0.
 alignment :: Boid -> Perception -> Vector
-       -- :: Boid -> [Boid] -> V2 Float
+       -- :: Boid -> [Boid]     -> V2 Float
 alignment _ []        = V2 0 0
 alignment _ neighbors =
     let m = fromIntegral $ length neighbors :: Float

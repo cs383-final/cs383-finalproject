@@ -92,7 +92,7 @@ boundsCheck (width, height) = map modBoid
         height' = fromIntegral height
 
 advanceWorld :: (Int, Int) -> ViewPort -> Float -> World -> World
-advanceWorld dims _ _ = (boundsCheck dims) . update eqWeightStep
+advanceWorld dims _ _ = (boundsCheck dims) . update cohesiveStep
 
 main :: IO ()
 main = do
