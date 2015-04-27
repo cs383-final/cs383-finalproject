@@ -141,6 +141,7 @@ neighborhood world self =
     \item<2-> In Haskell:
     \begin{minted}[fontsize=\footnotesize]{haskell}
 separation :: Boid -> Perception -> Vector
+        -- :: Boid -> [Boid]     -> V2 Float
 separation self neighbors =
     let p = position self
     in negated $
@@ -163,6 +164,7 @@ separation self neighbors =
         \item<3> In Haskell:
         \begin{minted}[fontsize=\footnotesize]{haskell}
 centre :: Perception -> Vector
+    -- :: [Boid]     -> V2 Float
 centre boids =
     let m = fromIntegral $ length boids :: Float
     in sumV (positions boids) ^/ m
@@ -183,6 +185,7 @@ centre boids =
         \item<2> In Haskell:
         \begin{minted}[fontsize=\footnotesize]{haskell}
 cohesion :: Boid -> Perception -> Vector
+      -- :: Boid -> [Boid]     -> V2 Float
 cohesion self neighbors =
     let p = position self
     in centre neighbors ^-^ p
@@ -231,14 +234,16 @@ alignment _ neighbors =
     \item In Haskell:
         \begin{minted}{haskell}
 steer :: Weights -> Behaviour
+   -- :: Weights -> [Boid] -> Boid -> Boid
 steer (s, c, m) neighbors self =
     let s_i  = s *^ separation self neighbors
         c_i  = c *^ cohesion self neighbors
         m_i  = m *^ alignment self neighbors
-        v'   = velocity self ^+^ s_i ^+^ c_i ^+^ m_i
+        v'   = velocity self ^+^ (s_i ^+^ c_i ^+^ m_i)
         p    = position self
-        p'   = p ^+^ v'
+        p'   = p ^+^ (v' ^/ speed)
     in self { position = p', velocity = v'}
+        where speed = 500
         \end{minted}
     \end{itemize}
 \end{frame}

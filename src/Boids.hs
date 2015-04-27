@@ -64,7 +64,7 @@ steer (s, c, m) neighbors self =
     let s_i  = s *^ separation self neighbors
         c_i  = c *^ cohesion self neighbors
         m_i  = m *^ alignment self neighbors
-        v'   = (velocity self ^+^ (s_i ^+^ c_i ^+^ m_i))
+        v'   = velocity self ^+^ (s_i ^+^ c_i ^+^ m_i)
         p    = position self
         p'   = p ^+^ (v' ^/ speed)
     in self { position = p', velocity = v'}
