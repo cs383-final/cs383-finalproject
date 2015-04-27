@@ -3,16 +3,13 @@ module Main where
 ------------------------------------------------------------------------
 
 import Boids
-import Linear.Vector
 import Linear.V3
 import Linear.V2
 import Graphics.Gloss hiding (Point)
 import Graphics.Gloss.Interface.Pure.Simulate hiding (Point)
-import Data.IORef (IORef, newIORef, readIORef, modifyIORef)
-import Control.Concurrent (threadDelay)
 import Control.Lens -- sorry
 import Control.Monad.Random
-import Data.Fixed
+import Control.Monad
 
 ------------------------------------------------------------------------
 
@@ -66,13 +63,13 @@ swarmStep :: Action
 swarmStep w b = swarmBehaviour (neighborhood w b) b
 
 initPos :: (RandomGen g) => Int -> Rand g [Float]
-initPos n = sequence $ replicate n $ (getRandomR (-50,50))
+initPos n = replicateM n $ getRandomR (-50,50)
 
 initWorld :: [(Float,Float)] -> World
 initWorld = map mkBoid
   where mkBoid (x,y) = Boid (V2 x y) still rad
         still        = V2 1 1
-        rad          = 100.0
+        rad          = 50.0
 
 norm :: Float -> Float -> Float
 norm pos d = (pos / d) * 2 - (d / 2)
@@ -80,15 +77,15 @@ norm pos d = (pos / d) * 2 - (d / 2)
 drawBoid :: Boid -> Picture
 drawBoid (Boid (V2 xpos ypos) (V2 xvel yvel) rad) =
   Translate xpos ypos $
-  Pictures [ (Circle 2)
-           , (Color red $ Circle rad)
-           , (Color green $ Line [(0,0), (xvel, yvel)])
+  Pictures [ Circle 2
+           , Color red $ Circle rad
+           , Color green $ Line [(0,0), (xvel, yvel)]
            ]
 
 drawWorld :: (Int, Int) -> World -> Picture
 drawWorld (xdim, ydim) = Translate xtrans ytrans . Pictures . map drawBoid
-  where xtrans = - ((fromIntegral xdim)/2)
-        ytrans = - ((fromIntegral ydim)/2)
+  where xtrans = - fromIntegral xdim / 2
+        ytrans = - fromIntegral ydim / 2
 
 inBounds :: Float -> Float -> Float
 inBounds bound = until (< bound) (subtract bound) . until (0 <=) (+ bound)
@@ -100,12 +97,12 @@ boundsCheck (width, height) = map modBoid
         inHeight = inBounds $ fromIntegral height
 
 advanceWorld :: (Int, Int) -> ViewPort -> Float -> World -> World
-advanceWorld dims _ _ = (boundsCheck dims) . update swarmStep
+advanceWorld dims _ _ = boundsCheck dims . update swarmStep
 
 main :: IO ()
 main = do
 
-  let dims = (1000, 1000)
+  let dims = (1000, 800)
 
   pos_x <- evalRandIO (initPos 20)
   pos_y <- evalRandIO (initPos 20)
