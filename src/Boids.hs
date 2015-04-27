@@ -66,7 +66,7 @@ steer (s, c, m) neighbors self =
         m_i  = m *^ alignment self neighbors
         v'   = (velocity self ^+^ (s_i ^+^ c_i ^+^ m_i))
         p    = position self
-        p'   = p ^+^ (v' ^/ speed) -- TODO: a speed coefficient could be added here
+        p'   = p ^+^ (v' ^/ speed)
     in self { position = p', velocity = v'}
         where speed = 500
 
