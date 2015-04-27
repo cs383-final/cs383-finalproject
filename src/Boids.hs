@@ -68,7 +68,7 @@ steer (s, c, m) neighbors self =
         p    = position self
         p'   = p ^+^ (v' ^/ speed)
     in self { position = p', velocity = v'}
-        where speed = 500
+        where speed = 1000
 
 -- | Extract the positions from a list of 'Boid's
 positions :: Perception -> [Vector]
