@@ -1,7 +1,6 @@
 \documentclass{beamer}
 \usepackage{minted}
 \usepackage{amsmath}
-\usetheme[]{Rochester}
 \usemintedstyle{trac}
 
 \title{Boids!}
@@ -16,16 +15,16 @@
 \end{frame}
 
 \begin{frame}
-    \frametitle{\huge{What are Boids?}\normalsize}
+    \huge{What are Boids?}\normalsize
     \begin{itemize}
-        \item An artificial life simulation
-        \item `Bird-oid' flocking behaviour
+        \item An artificial life simulation~\cite{hartman2006autonomous,reynolds1987flocks}
+        \item `Bird-oid' flocking behaviour~\cite{hartman2006autonomous,reynolds1987flocks}
         \item first described by Craig Reynolds in 1987~\cite{reynolds1987flocks}
     \end{itemize}
 \end{frame}
 
 \begin{frame}
-    \frametitle{\huge{Why Boids?}\normalsize}
+    \huge{Why Boids?}\normalsize
     \begin{itemize}
         \item Some major appearances:
         \begin{itemize}
@@ -40,8 +39,20 @@
     \end{itemize}
 \end{frame}
 
+\begin{frame}
+\huge{Our Implementation}\normalsize
+\begin{itemize}
+    \item \textbf{Haskell} programming language:
+    \begin{itemize}
+        \item It's good~\cite{hudak1994haskell}
+        \item Will should explain this; it's his pet toy language
+    \end{itemize}
+\end{itemize}
+
+\end{frame}
+
 \begin{frame}[fragile]
-    \frametitle{\huge{What is a Boid?}\normalsize}
+    \huge{What is a Boid?}\normalsize
     \begin{itemize}
         \item Consists of
         \begin{itemize}
@@ -50,7 +61,7 @@
             \item A sight radius $r$
         \end{itemize}
         \item In Haskell:
-        \begin{minted}{haskell}
+        \begin{minted}[fontsize=\footnotesize]{haskell}
 type Vector = V2 Float
 type Point  = V2 Float
 type Radius = Float
@@ -65,7 +76,7 @@ data Boid = Boid { position :: !Point
 \end{frame}
 
 \begin{frame}[fragile]
-    \frametitle{\huge{Separation steering vector}\normalsize}
+    \huge{Separation steering vector}\normalsize
     \begin{itemize}
 
     \item Tendency to avoid collisions with other boids
@@ -73,7 +84,7 @@ data Boid = Boid { position :: !Point
     \vec{s}_i = - \sum\limits_{\forall b_j \in V_i} (p_i - p_j)
     \end{equation*}
     \item In Haskell:
-    \begin{minted}{haskell}
+    \begin{minted}[fontsize=\footnotesize]{haskell}
 separation :: Boid -> Perception -> Vector
 separation self neighbors =
     let p = position self
@@ -86,7 +97,7 @@ separation self neighbors =
 \end{frame}
 
 \begin{frame}[fragile]
-\frametitle{\huge{Cohesion steering vector}\normalsize}
+\huge{Cohesion steering vector}\normalsize
     \begin{itemize}
         \item Tendency to steer towards the centre of visible boids
         \item Calculated in two steps:
@@ -97,7 +108,7 @@ separation self neighbors =
         \vec{k}_i = c_i - p_i
         \end{equation}
         \item In Haskell:
-        \begin{minted}{haskell}
+        \begin{minted}[fontsize=\footnotesize]{haskell}
 centre :: Perception -> Vector
 centre boids =
     let m = fromIntegral $ length boids :: Float
@@ -114,14 +125,14 @@ cohesion self neighbors =
 \end{frame}
 
 \begin{frame}[fragile]
-    \frametitle{\huge{Alignment steering vector}\normalsize}
+    \huge{Alignment steering vector}\normalsize
     \begin{itemize}
     \item Tendency to match velocity with visible boids
     \begin{equation*}
     \vec{m}_i = \sum\limits_{\forall b_j \in V_i} \frac{\vec{v}_j}{m}
     \end{equation*}
     \item In Haskell:
-    \begin{minted}{haskell}
+    \begin{minted}[fontsize=\footnotesize]{haskell}
 alignment :: Boid -> Perception -> Vector
 alignment _ []        = V2 0 0
 alignment _ neighbors =
@@ -130,6 +141,11 @@ alignment _ neighbors =
     \end{minted}
     \end{itemize}
 
+\end{frame}
+\begin{frame}
+\huge{References}\normalsize
+ \bibliographystyle{plain}
+ \bibliography{../assets/references}
 \end{frame}
 
 \end{document}
