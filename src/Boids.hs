@@ -55,7 +55,7 @@ swarmBehaviour :: Behaviour
 swarmBehaviour = steer (1.0,1.0,0.0)
 
 cohesiveBehaviour :: Behaviour
-cohesiveBehaviour = steer (1.0,2.0,0.0)
+cohesiveBehaviour = steer (2.0,1.0,1.0)
 
 -- |Compose a 'Behaviour' for a 'Boid' based on a tuple of 'Weights'.
 steer :: Weights -> Behaviour
@@ -64,9 +64,9 @@ steer (s, c, m) neighbors self =
     let s_i  = s *^ separation self neighbors
         c_i  = c *^ cohesion self neighbors
         m_i  = m *^ alignment self neighbors
-        v'   = velocity self ^+^ s_i ^+^ c_i ^+^ m_i
+        v'   = (velocity self ^+^ s_i ^+^ c_i ^+^ m_i) ^/ 50
         p    = position self
-        p'   = p ^+^ v' -- TODO: a speed coefficient could be added here
+        p'   = (p ^+^ v') -- TODO: a speed coefficient could be added here
     in self { position = p', velocity = v'}
 
 -- | Extract the positions from a list of 'Boid's
@@ -80,7 +80,7 @@ centre :: Perception -> Vector
     -- :: [Boid] -> V2 Float
 centre boids =
     let m = fromIntegral $ length boids :: Float
-    in sumV $ map (^/ m) $ positions boids
+    in sumV (positions boids) ^/ m
 
 -- |Find the separation steer vector for a 'Boid' given a 'Neighborhood'.
 --
@@ -91,10 +91,11 @@ centre boids =
 -- boid's position /p/i against each other position /p/j and taking the
 -- negative sum of these vectors.
 separation :: Boid -> Perception -> Vector
-        -- :: Boid -> [Boid] -> V3 Float
+        -- :: Boid -> [Boid]     -> V3 Float
 separation self neighbors =
     let p = position self
-    in sumV . map (^-^ p) $ positions neighbors
+    in
+      negated $ sumV $ map (^-^ p) $ positions neighbors
 
 -- |Find the cohesion steer vector for a 'Boid' given a 'Neighborhood'.
 --
@@ -109,7 +110,7 @@ cohesion :: Boid -> Perception -> Vector
       -- :: Boid -> [Boid] -> V2 Float
 cohesion self neighbors =
     let p = position self
-    in p - (centre neighbors)
+    in centre neighbors ^-^ p
 
 -- |Find the alignment steer vector for a boid given a neighborhood.
 --
