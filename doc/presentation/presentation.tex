@@ -138,31 +138,38 @@ separation self neighbors =
     \begin{itemize}
         \item Tendency to steer towards the centre of visible boids
         \item Calculated in two steps.
-        \begin{enumerate}
-        \item<2-> Find the centre:
-            \begin{equation}
-            c_i = \sum\limits_{\forall b_j \in V_i} \frac{p_j}{m}
-            \end{equation}
-        \item<3-> Calculate vector:
+        \item<2-> \textbf{Step I}: Find the centre:
             \begin{equation*}
-            \vec{k}_i = c_i - p_i
+            c_i = \sum\limits_{\forall b_j \in V_i} \frac{p_j}{m}
             \end{equation*}
-        \end{enumerate}
-        \item<4-> In Haskell:
+        \item<3> In Haskell:
         \begin{minted}[fontsize=\footnotesize]{haskell}
 centre :: Perception -> Vector
 centre boids =
     let m = fromIntegral $ length boids :: Float
     in sumV (positions boids) ^/ m
+        \end{minted}
+    \end{itemize}
+
+\end{frame}
+
+\begin{frame}[fragile]
+\huge{Cohesion steering vector}\normalsize
+    \begin{itemize}
+        \item Tendency to steer towards the centre of visible boids
+        \item Calculated in two steps.
+\item<1-> \textbf{Step II}: Find the cohesion vector:
+            \begin{equation*}
+            c_i = \sum\limits_{\forall b_j \in V_i} \frac{p_j}{m}
+            \end{equation*}
+        \item<2> In Haskell:
+        \begin{minted}[fontsize=\footnotesize]{haskell}
 cohesion :: Boid -> Perception -> Vector
 cohesion self neighbors =
     let p = position self
     in centre neighbors ^-^ p
         \end{minted}
-
     \end{itemize}
-
-
 \end{frame}
 
 \begin{frame}[fragile]
