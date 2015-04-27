@@ -11,6 +11,7 @@ import Graphics.Gloss.Interface.Pure.Simulate hiding (Point)
 import Data.IORef (IORef, newIORef, readIORef, modifyIORef)
 import Control.Concurrent (threadDelay)
 import Control.Lens -- sorry
+import Control.Monad.Random
 import System.Random
 
 ------------------------------------------------------------------------
@@ -64,16 +65,14 @@ cohesiveStep w b = cohesiveBehaviour (neighborhood w b) b
 swarmStep :: Action
 swarmStep w b = swarmBehaviour (neighborhood w b) b
 
-randomBoid :: RandomGen g => g -> (Boid, g)
-randomBoid g = case randomR (-50,50) g of
-                    (r', g') -> ((Boid (pos r') origin rad), g')
-  where pos x  = V2 x x
-        origin = V2 0 0
-        rad    = 500.0
+initPos :: (RandomGen g) => Int -> Rand g [Float]
+initPos n = sequence $ replicate n $ (getRandomR (-50,50))
 
-
-initWorld :: RandomGen g => g -> Int -> World
-initWorld g n = map fst $ replicate n $ randomBoid g
+initWorld :: [(Float,Float)] -> World
+initWorld = map mkBoid
+  where mkBoid (x,y) = Boid (V2 x y) still radius
+        still        = V2 0 0
+        radius       = 500.0
 
 norm :: Float -> Float -> Float
 norm pos dim = (pos / dim) * 2 - (dim / 2)
@@ -90,11 +89,12 @@ advanceWorld _ _ = update swarmStep
 main :: IO ()
 main = do
 
-  g <- getStdGen
+  pos_x <- evalRandIO (initPos 20)
+  pos_y <- evalRandIO (initPos 20)
 
   simulate (InWindow "Boids" (300, 300) (10, 10))
     white   -- background color
-    20       -- updates per second
-    (initWorld g 10)
+    3       -- updates per second
+    (initWorld $ zip pos_x pos_y)
     drawWorld
     advanceWorld
