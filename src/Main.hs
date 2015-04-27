@@ -12,9 +12,6 @@ import Control.Monad.Random
 ------------------------------------------------------------------------
 
 
-norm :: Float -> Float -> Float
-norm pos d = (pos / d) * 2 - (d / 2)
-
 drawBoid :: Boid -> Picture
 drawBoid (Boid (V2 xpos ypos) (V2 xvel yvel) rad) =
   Translate xpos ypos $
