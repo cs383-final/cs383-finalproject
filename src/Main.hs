@@ -12,7 +12,6 @@ import Data.IORef (IORef, newIORef, readIORef, modifyIORef)
 import Control.Concurrent (threadDelay)
 import Control.Lens -- sorry
 import Control.Monad.Random
-import System.Random
 import Data.Fixed
 
 ------------------------------------------------------------------------
@@ -74,9 +73,6 @@ initWorld = map mkBoid
   where mkBoid (x,y) = Boid (V2 x y) still rad
         still        = V2 0 0
         rad          = 50.0
-
-norm :: Float -> Float -> Float
-norm pos d = (pos / d) * 2 - (d / 2)
 
 drawBoid :: Boid -> Picture
 drawBoid (Boid (V2 xpos ypos) (V2 xvel yvel) rad) =
