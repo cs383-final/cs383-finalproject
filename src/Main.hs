@@ -84,10 +84,11 @@ drawPretty boid = case boid of
 
 drawBoid :: BoidArtist
 drawBoid (Boid (V2 xpos ypos) (V2 xvel yvel) _) =
-  Rotate theta $ Polygon [(5,0), (-5,0), (0,5)]
-  where theta = (atan2 xdiff ydiff) * (180 / pi)
+  Rotate theta $ Polygon [(-5,0), (0,3), (5,0)]
+  where theta = toDegrees $ atan2 xdiff ydiff
         xdiff = xvel - xpos
         ydiff = yvel - ypos
+        toDegrees rad = rad * 180 / pi
 
 drawDebug :: BoidArtist
 drawDebug boid = case boid of
