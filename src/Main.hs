@@ -32,23 +32,23 @@ options :: [OptDescr (Options -> IO Options)]
 options =
   [ Option ['d']     ["debug"]
       (NoArg (\ opts -> return opts { optDebug = True}))
-      "show debug mode"
+      "Show debug mode"
   , Option ['c'] ["cohesive"]
       (NoArg (\ opts -> return opts { optMode = cohesiveStep }))
-      "cohesive behaviour"
+      "Cohesive boid behaviour"
   , Option ['s'] ["swarm"]
       (NoArg (\ opts -> return opts { optMode = swarmStep }))
-      "swarming behaviour"
+      "Swarming boid behaviour"
   , Option ['e'] ["equal"]
       (NoArg (\ opts -> return opts { optMode = eqWeightStep}))
-      "equal weighted behaviour"
-  , Option ['h'] ["height"]
+      "Equal-weighted boid behaviour"
+  , Option ['x'] ["height"]
       (ReqArg (\x opts -> return opts { optHeight = read x :: Int}) "HEIGHT")
-      "window height"
-  , Option ['w'] ["width"]
+      "Window height (pixels)"
+  , Option ['y'] ["width"]
       (ReqArg (\x opts -> return opts { optWidth = read x :: Int}) "WIDTH")
-      "window width"
-  , Option "l" ["help"]
+      "Window width (pixels)"
+  , Option "h" ["help"]
         (NoArg
             (\_ -> do
                 putStrLn (usageInfo "Boids" options)
