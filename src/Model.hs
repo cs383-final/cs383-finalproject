@@ -69,3 +69,12 @@ initWorld = map mkBoid
   where mkBoid (x,y) = Boid (V2 x y) still rad
         still        = V2 1 1
         rad          = 50.0
+
+inBounds :: Float -> Float -> Float
+inBounds bound = until (< bound) (subtract bound) . until (0 <=) (+ bound)
+
+boundsCheck :: (Int, Int) -> World -> World
+boundsCheck (width, height) = map modBoid
+  where modBoid b@(Boid (V2 x y) _ _) = b { position = V2 (inWidth x) (inHeight y) }
+        inWidth  = inBounds $ fromIntegral width
+        inHeight = inBounds $ fromIntegral height

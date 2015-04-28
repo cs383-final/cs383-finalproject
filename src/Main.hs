@@ -74,15 +74,6 @@ drawWorld (xdim, ydim) = Translate xtrans ytrans . Pictures . map drawBoid
   where xtrans = - fromIntegral xdim / 2
         ytrans = - fromIntegral ydim / 2
 
-inBounds :: Float -> Float -> Float
-inBounds bound = until (< bound) (subtract bound) . until (0 <=) (+ bound)
-
-boundsCheck :: (Int, Int) -> World -> World
-boundsCheck (width, height) = map modBoid
-  where modBoid b@(Boid (V2 x y) _ _) = b { position = V2 (inWidth x) (inHeight y) }
-        inWidth  = inBounds $ fromIntegral width
-        inHeight = inBounds $ fromIntegral height
-
 advanceWorld :: (Int, Int) -> Action -> ViewPort -> Float -> World -> World
 advanceWorld dims step _ _ = boundsCheck dims . update step
 
