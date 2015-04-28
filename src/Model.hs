@@ -67,8 +67,8 @@ cohesiveStep s w b = cohesiveBehaviour s (neighborhood w b) b
 swarmStep :: Step
 swarmStep s w b = swarmBehaviour s (neighborhood w b) b
 
-initPos :: (RandomGen g) => Int -> Rand g [Float]
-initPos n = replicateM n $ getRandomR (-50,50)
+initPos :: (RandomGen g) => Float -> Int -> Rand g [Float]
+initPos origin n = replicateM n $ getRandomR (origin - 50, origin + 50)
 
 initWorld :: Radius -> [(Float,Float)] -> World
 initWorld radius' = map mkBoid

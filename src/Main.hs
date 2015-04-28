@@ -124,8 +124,8 @@ main = do
 
   let dims = (height, width)
 
-  pos_x <- evalRandIO (initPos number)
-  pos_y <- evalRandIO (initPos number)
+  pos_x <- evalRandIO (initPos ((fromIntegral height :: Float)/2) number)
+  pos_y <- evalRandIO (initPos ((fromIntegral width :: Float)/2) number)
 
   simulate (InWindow "Boids" dims (0, 0))
     (greyN 0.7)  -- background color
