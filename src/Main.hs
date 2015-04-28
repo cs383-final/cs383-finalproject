@@ -10,6 +10,7 @@ import Graphics.Gloss.Interface.Pure.Simulate hiding (Point)
 import Control.Monad.Random
 import System.Environment( getArgs )
 import System.Console.GetOpt
+import System.Exit
 
 ------------------------------------------------------------------------
 
@@ -23,28 +24,27 @@ defaultOptions  = Options
   , optMode     = eqWeightStep
   }
 
-options :: [OptDescr (Options -> Options)]
+options :: [OptDescr (Options -> IO Options)]
 options =
   [ Option ['d']     ["debug"]
-      (NoArg (\ opts -> opts { optDebug = True}))
+      (NoArg (\ opts -> return opts { optDebug = True}))
       "show debug mode"
   , Option ['c'] ["cohesive"]
-      (NoArg (\ opts -> opts { optMode = cohesiveStep }))
+      (NoArg (\ opts -> return opts { optMode = cohesiveStep }))
       "cohesive behaviour"
   , Option ['s'] ["swarm"]
-      (NoArg (\ opts -> opts { optMode = swarmStep }))
+      (NoArg (\ opts -> return opts { optMode = swarmStep }))
       "swarming behaviour"
   , Option ['e'] ["equal"]
-      (NoArg (\ opts -> opts { optMode = eqWeightStep}))
+      (NoArg (\ opts -> return opts { optMode = eqWeightStep}))
       "equal weighted behavioir"
+  , Option "h" ["help"]
+        (NoArg
+            (\_ -> do
+                putStrLn (usageInfo "Boids" options)
+                exitWith ExitSuccess))
+        "Show help"
   ]
-
-argOpts :: [String] -> IO (Options, [String])
-argOpts argv =
-  case getOpt Permute options argv of
-     (o,n,[]  ) -> return (foldl (flip id) defaultOptions o, n)
-     (_,_,errs) -> ioError (userError (concat errs ++ usageInfo header options))
- where header = "Usage: -dcsv"
 
 drawBoid :: Boid -> Picture
 drawBoid (Boid (V2 xpos ypos) (V2 xvel yvel) rad) =
@@ -68,16 +68,23 @@ boundsCheck (width, height) = map modBoid
         inWidth  = inBounds $ fromIntegral width
         inHeight = inBounds $ fromIntegral height
 
-advanceWorld :: (Int, Int) -> ViewPort -> Float -> World -> World
-advanceWorld dims _ _ = boundsCheck dims . update cohesiveStep
+advanceWorld :: (Int, Int) -> Action -> ViewPort -> Float -> World -> World
+advanceWorld dims step _ _ = boundsCheck dims . update step
 
 main :: IO ()
 main = do
+  args <- getArgs
+
+  -- Parse options, getting a list of option actions
+  let (actions, nonOptions, errors) = getOpt RequireOrder options args
+
+  -- Here we thread startOptions through all supplied option actions
+  opts <- foldl (>>=) (return defaultOptions) actions
+
+  let Options { optDebug = verbose
+              , optMode  = mode } = opts
 
   let dims = (1000, 800)
-
-  args <- getArgs
-  let ( flags, nonOpts, msgs ) = getOpt RequireOrder options args
 
   pos_x <- evalRandIO (initPos 20)
   pos_y <- evalRandIO (initPos 20)
@@ -87,4 +94,4 @@ main = do
     30           -- updates per second
     (initWorld $ zip pos_x pos_y)
     (drawWorld dims)
-    (advanceWorld dims)
+    (advanceWorld dims (optMode opts))
