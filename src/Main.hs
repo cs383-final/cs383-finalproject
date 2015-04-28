@@ -62,10 +62,10 @@ options =
       "Number of boids in the simulation"
   , Option ['v'] ["visibility"]
       (ReqArg (\x opts -> return opts { optRadius = read x :: Float}) "RADIUS")
-      "Boid visibility radius"
+      "Boid visibility radius\nDefault is 50"
   , Option ['p'] ["speed"]
-      (ReqArg (\x opts -> return opts { optRadius = read x :: Float}) "SPEED")
-      "Coefficient for simulation speed. Default is 1000 at 30fps."
+      (ReqArg (\x opts -> return opts { optSpeed = read x :: Float}) "SPEED")
+      "Higher values make boids move slower.\nDefault is 1000 at 30fps."
   , Option "h" ["help"]
         (NoArg
             (\_ -> do
