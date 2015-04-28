@@ -96,14 +96,14 @@ main = do
   -- Here we thread startOptions through all supplied option actions
   opts <- foldl (>>=) (return defaultOptions) actions
 
-  let Options { optDebug  = verbose
+  let Options { optDebug  = debug
               , optMode   = mode
               , optHeight = height
               , optWidth  = width
               , optNumber = number
               } = opts
 
-  let dims = ((optHeight opts), (optWidth opts))
+  let dims = (height, width)
 
   pos_x <- evalRandIO (initPos number)
   pos_y <- evalRandIO (initPos number)
@@ -113,4 +113,4 @@ main = do
     30           -- updates per second
     (initWorld $ zip pos_x pos_y)
     (drawWorld dims)
-    (advanceWorld dims (optMode opts))
+    (advanceWorld dims mode)
