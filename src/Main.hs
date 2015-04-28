@@ -17,11 +17,12 @@ import System.Exit
 -- Option parsing stuff -------------------------------------------------------
 data Options = Options
   { optDrawMode    :: BoidArtist
-  , optStep        :: Action
+  , optStep        :: Step
   , optHeight      :: Int
   , optWidth       :: Int
   , optNumber      :: Int
   , optRadius      :: Float
+  , optSpeed       :: Float
   }
 
 -- Some sensible default configurations
@@ -33,6 +34,7 @@ defaultOptions  = Options
   , optWidth    = 800
   , optNumber   = 20
   , optRadius   = 50.0
+  , optSpeed    = 1000.0
   }
 
 options :: [OptDescr (Options -> IO Options)]
@@ -61,6 +63,9 @@ options =
   , Option ['v'] ["visibility"]
       (ReqArg (\x opts -> return opts { optRadius = read x :: Float}) "RADIUS")
       "Boid visibility radius"
+  , Option ['p'] ["speed"]
+      (ReqArg (\x opts -> return opts { optRadius = read x :: Float}) "SPEED")
+      "Coefficient for simulation speed. Default is 1000 at 30fps."
   , Option "h" ["help"]
         (NoArg
             (\_ -> do
@@ -114,6 +119,7 @@ main = do
               , optWidth    = width
               , optNumber   = number
               , optRadius   = rad
+              , optSpeed    = speed
               } = opts
 
   let dims = (height, width)
@@ -123,7 +129,7 @@ main = do
 
   simulate (InWindow "Boids" dims (0, 0))
     (greyN 0.7)  -- background color
-    60           -- updates per second
+    30           -- updates per second
     (initWorld rad $ zip pos_x pos_y)
     (drawWorld dims mode)
-    (advanceWorld dims step)
+    (advanceWorld dims (step speed))

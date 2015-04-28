@@ -10,6 +10,7 @@ import Linear.Vector
 type Vector = V2 Float
 type Point  = V2 Float
 type Radius = Float
+type Speed  = Float
 
 data Boid = Boid { position :: !Point
                  , velocity :: !Vector
@@ -25,7 +26,7 @@ type Perception = [Boid]
 
 -- | A Behaviour function maps a 'Perception' of the environment to
 --  a function for 'Update'ing a 'Boid''s position.
-type Behaviour  = Perception -> Update
+type Behaviour  = Speed -> Perception -> Update
 
 -- | Weight coefficients applied to control the influence of each
 -- steer vector on a 'Boid'.
@@ -42,7 +43,7 @@ type Weights    = (Float,Float,Float)
 
 emptyBehaviour :: Behaviour
             -- :: [Boid] -> Boid -> Boid
-emptyBehaviour _ b = b
+emptyBehaviour _ _ b = b
 
 -- |'Behaviour' assuming all steer vectors
 -- ('cohesion', 'separation', 'alignment') are equally weighted.
@@ -60,7 +61,7 @@ cohesiveBehaviour = steer (1.0,0.5,0.5)
 -- |Compose a 'Behaviour' for a 'Boid' based on a tuple of 'Weights'.
 steer :: Weights -> Behaviour
    -- :: Weights -> [Boid] -> Boid -> Boid
-steer (s, k, m) neighbors self =
+steer (s, k, m) speed neighbors self =
     let s_i  = s *^ separation self neighbors
         k_i  = k *^ cohesion self neighbors
         m_i  = m *^ alignment self neighbors
@@ -68,7 +69,6 @@ steer (s, k, m) neighbors self =
         p    = position self
         p'   = p ^+^ (v' ^/ speed)
     in self { position = p', velocity = v'}
-        where speed = 1000
 
 -- | Extract the positions from a list of 'Boid's
 positions :: Perception -> [Vector]

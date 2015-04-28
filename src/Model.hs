@@ -18,6 +18,8 @@ type World  = [Boid]
 -- the boids
 type Action = World -> Boid -> Boid
 
+type Step = Speed -> Action
+
 -- |Update the entire world state by mapping an 'Action' across each 'Boid'
 update :: Action -> World -> World
 update a w = map (a w) w
@@ -53,17 +55,17 @@ neighborhood world self = filter (inCircle cent rad . position) world
     where cent = position self
           rad  = radius self
 
-emptyStep :: Action
-emptyStep w b = emptyBehaviour (neighborhood w b) b
+emptyStep :: Step
+emptyStep s w b = emptyBehaviour s (neighborhood w b) b
 
-eqWeightStep :: Action
-eqWeightStep w b = equalWeightsBehaviour (neighborhood w b) b
+eqWeightStep :: Step
+eqWeightStep s w b = equalWeightsBehaviour s (neighborhood w b) b
 
-cohesiveStep :: Action
-cohesiveStep w b = cohesiveBehaviour (neighborhood w b) b
+cohesiveStep :: Step
+cohesiveStep s w b = cohesiveBehaviour s (neighborhood w b) b
 
-swarmStep :: Action
-swarmStep w b = swarmBehaviour (neighborhood w b) b
+swarmStep :: Step
+swarmStep s w b = swarmBehaviour s (neighborhood w b) b
 
 initPos :: (RandomGen g) => Int -> Rand g [Float]
 initPos n = replicateM n $ getRandomR (-50,50)
