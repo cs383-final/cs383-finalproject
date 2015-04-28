@@ -24,6 +24,8 @@ data Options = Options
   , optRadius      :: Float
   }
 
+-- Some sensible default configurations
+defaultOptions :: Options
 defaultOptions  = Options
   { optDrawMode = drawPretty
   , optStep     = eqWeightStep
@@ -72,7 +74,7 @@ options =
 type BoidArtist = Boid -> Picture
 
 drawPretty :: BoidArtist
-drawPretty (Boid (V2 xpos ypos) (V2 xvel yvel) rad) =
+drawPretty (Boid (V2 xpos ypos) (V2 xvel yvel) _) =
   Translate xpos ypos $ Rotate theta $ Polygon [(5,0), (-5,0), (0,5)]
   where theta = (atan2 xdiff ydiff) * (180 / pi)
         xdiff = xvel - xpos
@@ -101,7 +103,7 @@ main = do
   args <- getArgs
 
   -- Parse options, getting a list of option actions
-  let (actions, nonOptions, errors) = getOpt RequireOrder options args
+  let (actions, _, _) = getOpt RequireOrder options args
 
   -- Here we thread startOptions through all supplied option actions
   opts <- foldl (>>=) (return defaultOptions) actions
