@@ -76,31 +76,31 @@ options =
 
 -- View ---------------------------------------------------------------------
 
-type BoidArtist = Boid -> Picture
+type BoidArtist = (Float, Float) -> Boid -> Picture
 
 drawPretty :: BoidArtist
-drawPretty boid = case boid of
-  (Boid (V2 xpos ypos) _ _) -> Translate xpos ypos $ drawBoid boid
+drawPretty dims boid = case boid of
+  (Boid (V2 xpos ypos) _ _) -> Translate xpos ypos $ drawBoid dims boid
 
 drawBoid :: BoidArtist
-drawBoid (Boid (V2 xpos ypos) (V2 xvel yvel) _) =
+drawBoid (xtrans, ytrans) (Boid (V2 xpos ypos) (V2 xvel yvel) _) =
   Rotate theta $ Polygon [(-6,0), (0,3), (6,0)]
   where theta = toDegrees $ atan2 xdiff ydiff
-        xdiff = xvel - xpos
-        ydiff = yvel - ypos
+        xdiff = (xvel + xtrans) - (xpos + xtrans)
+        ydiff = (yvel + ytrans) - (ypos + ytrans)
         toDegrees rad = rad * 180 / pi
 
 drawDebug :: BoidArtist
-drawDebug boid = case boid of
+drawDebug dims boid = case boid of
   (Boid (V2 xpos ypos) (V2 xvel yvel) rad) ->
     Translate xpos ypos $
-    Pictures [ drawBoid boid
+    Pictures [ drawBoid dims boid
              , Color red $ Circle rad
              , Color green $ Line [(0,0), (xvel, yvel)]
              ]
 
 drawWorld :: (Int, Int) -> BoidArtist -> World -> Picture
-drawWorld (xdim, ydim) draw = Translate xtrans ytrans . Pictures . map draw
+drawWorld (xdim, ydim) draw = Translate xtrans ytrans . Pictures . map (draw (xtrans, ytrans))
   where xtrans = - fromIntegral xdim / 2
         ytrans = - fromIntegral ydim / 2
 
