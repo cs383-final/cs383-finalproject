@@ -21,6 +21,7 @@ data Options = Options
   , optHeight      :: Int
   , optWidth       :: Int
   , optNumber      :: Int
+  , optRadius      :: Float
   }
 
 defaultOptions  = Options
@@ -29,6 +30,7 @@ defaultOptions  = Options
   , optHeight   = 800
   , optWidth    = 800
   , optNumber   = 20
+  , optRadius   = 50.0
   }
 
 options :: [OptDescr (Options -> IO Options)]
@@ -54,6 +56,9 @@ options =
   , Option ['n'] ["num"]
       (ReqArg (\x opts -> return opts { optNumber = read x :: Int}) "BOIDS")
       "Number of boids in the simulation"
+  , Option ['v'] ["visibility"]
+      (ReqArg (\x opts -> return opts { optRadius = read x :: Float}) "RADIUS")
+      "Boid visibility radius"
   , Option "h" ["help"]
         (NoArg
             (\_ -> do
@@ -106,6 +111,7 @@ main = do
               , optHeight   = height
               , optWidth    = width
               , optNumber   = number
+              , optRadius   = rad
               } = opts
 
   let dims = (height, width)
@@ -115,7 +121,7 @@ main = do
 
   simulate (InWindow "Boids" dims (0, 0))
     (greyN 0.7)  -- background color
-    30           -- updates per second
-    (initWorld $ zip pos_x pos_y)
+    60           -- updates per second
+    (initWorld rad $ zip pos_x pos_y)
     (drawWorld dims mode)
     (advanceWorld dims step)

@@ -68,11 +68,10 @@ swarmStep w b = swarmBehaviour (neighborhood w b) b
 initPos :: (RandomGen g) => Int -> Rand g [Float]
 initPos n = replicateM n $ getRandomR (-50,50)
 
-initWorld :: [(Float,Float)] -> World
-initWorld = map mkBoid
-  where mkBoid (x,y) = Boid (V2 x y) still rad
-        still        = V2 1 1
-        rad          = 50.0
+initWorld :: Radius -> [(Float,Float)] -> World
+initWorld radius' = map mkBoid
+  where mkBoid (x,y) = Boid (V2 x y) velocity' radius'
+        velocity'    = V2 1 1
 
 inBounds :: Float -> Float -> Float
 inBounds bound = until (< bound) (subtract bound) . until (0 <=) (+ bound)
