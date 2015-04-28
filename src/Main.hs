@@ -19,6 +19,7 @@ data Options = Options
   , optMode        :: Action
   , optHeight      :: Int
   , optWidth       :: Int
+  , optNumber      :: Int
   }
 
 defaultOptions  = Options
@@ -26,6 +27,7 @@ defaultOptions  = Options
   , optMode     = eqWeightStep
   , optHeight   = 800
   , optWidth    = 800
+  , optNumber   = 20
   }
 
 options :: [OptDescr (Options -> IO Options)]
@@ -48,6 +50,9 @@ options =
   , Option ['y'] ["width"]
       (ReqArg (\x opts -> return opts { optWidth = read x :: Int}) "WIDTH")
       "Window width (pixels)"
+  , Option ['n'] ["num"]
+      (ReqArg (\x opts -> return opts { optNumber = read x :: Int}) "BOIDS")
+      "Number of boids in the simulation"
   , Option "h" ["help"]
         (NoArg
             (\_ -> do
@@ -95,12 +100,13 @@ main = do
               , optMode   = mode
               , optHeight = height
               , optWidth  = width
+              , optNumber = number
               } = opts
 
   let dims = ((optHeight opts), (optWidth opts))
 
-  pos_x <- evalRandIO (initPos 20)
-  pos_y <- evalRandIO (initPos 20)
+  pos_x <- evalRandIO (initPos number)
+  pos_y <- evalRandIO (initPos number)
 
   simulate (InWindow "Boids" dims (0, 0))
     (greyN 0.7)  -- background color
