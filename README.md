@@ -19,12 +19,17 @@ To run our simulation, just launch the `boids` executable, which Cabal will buil
 `boids` supports the following command-line parameters:
 ```
 Boids
-  -d         --debug          Show debug mode
-  -c         --cohesive       Cohesive boid behaviour
-  -s         --swarm          Swarming boid behaviour
-  -e         --equal          Equal-weighted boid behaviour
-  -x HEIGHT  --height=HEIGHT  Window height (pixels)
-  -y WIDTH   --width=WIDTH    Window width (pixels)
-  -n BOIDS   --num=BOIDS      Number of boids in the simulation
-  -h         --help           Show this help file
+  -d         --debug              Draw boids in debug mode
+  -c         --cohesive           Cohesive boid behaviour
+  -s         --swarm              Swarming boid behaviour
+  -e         --equal              Equal-weighted boid behaviour
+  -x HEIGHT  --height=HEIGHT      Window height (pixels)
+  -y WIDTH   --width=WIDTH        Window width (pixels)
+  -n BOIDS   --num=BOIDS          Number of boids in the simulation
+  -v RADIUS  --visibility=RADIUS  Boid visibility radius
+                                  Default is 50
+  -p SPEED   --speed=SPEED        Higher values make boids move slower.
+                                  Default is 1000 at 30fps.
+  -h         --help               Show this help file
+
   ```
