@@ -79,19 +79,24 @@ options =
 type BoidArtist = Boid -> Picture
 
 drawPretty :: BoidArtist
-drawPretty (Boid (V2 xpos ypos) (V2 xvel yvel) _) =
-  Translate xpos ypos $ Rotate theta $ Polygon [(5,0), (-5,0), (0,5)]
+drawPretty boid = case boid of
+  (Boid (V2 xpos ypos) _ _) -> Translate xpos ypos $ drawBoid boid
+
+drawBoid :: BoidArtist
+drawBoid (Boid (V2 xpos ypos) (V2 xvel yvel) _) =
+  Rotate theta $ Polygon [(5,0), (-5,0), (0,5)]
   where theta = (atan2 xdiff ydiff) * (180 / pi)
         xdiff = xvel - xpos
         ydiff = yvel - ypos
 
 drawDebug :: BoidArtist
-drawDebug (Boid (V2 xpos ypos) (V2 xvel yvel) rad) =
-  Translate xpos ypos $
-  Pictures [ Circle 2
-           , Color red $ Circle rad
-           , Color green $ Line [(0,0), (xvel, yvel)]
-           ]
+drawDebug boid = case boid of
+  (Boid (V2 xpos ypos) (V2 xvel yvel) rad) ->
+    Translate xpos ypos $
+    Pictures [ drawBoid boid
+             , Color red $ Circle rad
+             , Color green $ Line [(0,0), (xvel, yvel)]
+             ]
 
 drawWorld :: (Int, Int) -> BoidArtist -> World -> Picture
 drawWorld (xdim, ydim) draw = Translate xtrans ytrans . Pictures . map draw
