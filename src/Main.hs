@@ -1,6 +1,6 @@
 module Main where
 
-------------------------------------------------------------------------
+-------------------------------------------------------------------------------
 
 import Boids
 import Model
@@ -12,19 +12,20 @@ import System.Environment( getArgs )
 import System.Console.GetOpt
 import System.Exit
 
-------------------------------------------------------------------------
+-------------------------------------------------------------------------------
 
+-- Option parsing stuff -------------------------------------------------------
 data Options = Options
-  { optDebug       :: Bool
-  , optMode        :: Action
+  { optDrawMode    :: BoidArtist
+  , optStep        :: Action
   , optHeight      :: Int
   , optWidth       :: Int
   , optNumber      :: Int
   }
 
 defaultOptions  = Options
-  { optDebug    = False
-  , optMode     = eqWeightStep
+  { optDrawMode = drawPretty
+  , optStep     = eqWeightStep
   , optHeight   = 800
   , optWidth    = 800
   , optNumber   = 20
@@ -33,16 +34,16 @@ defaultOptions  = Options
 options :: [OptDescr (Options -> IO Options)]
 options =
   [ Option ['d']     ["debug"]
-      (NoArg (\ opts -> return opts { optDebug = True}))
-      "Show debug mode"
+      (NoArg (\ opts -> return opts { optDrawMode = drawDebug }))
+      "Draw boids in debug mode"
   , Option ['c'] ["cohesive"]
-      (NoArg (\ opts -> return opts { optMode = cohesiveStep }))
+      (NoArg (\ opts -> return opts { optStep = cohesiveStep }))
       "Cohesive boid behaviour"
   , Option ['s'] ["swarm"]
-      (NoArg (\ opts -> return opts { optMode = swarmStep }))
+      (NoArg (\ opts -> return opts { optStep = swarmStep }))
       "Swarming boid behaviour"
   , Option ['e'] ["equal"]
-      (NoArg (\ opts -> return opts { optMode = eqWeightStep}))
+      (NoArg (\ opts -> return opts { optStep = eqWeightStep}))
       "Equal-weighted boid behaviour"
   , Option ['x'] ["height"]
       (ReqArg (\x opts -> return opts { optHeight = read x :: Int}) "HEIGHT")
@@ -61,18 +62,30 @@ options =
         "Show this help file"
   ]
 
-drawBoid :: Boid -> Picture
-drawBoid (Boid (V2 xpos ypos) (V2 xvel yvel) rad) =
+-- View ---------------------------------------------------------------------
+
+type BoidArtist = Boid -> Picture
+
+drawPretty :: BoidArtist
+drawPretty (Boid (V2 xpos ypos) (V2 xvel yvel) rad) =
+  Translate xpos ypos $
+  Pictures [ Circle 2 -- todo: make fancy
+           ]
+
+drawDebug :: BoidArtist
+drawDebug (Boid (V2 xpos ypos) (V2 xvel yvel) rad) =
   Translate xpos ypos $
   Pictures [ Circle 2
            , Color red $ Circle rad
            , Color green $ Line [(0,0), (xvel, yvel)]
            ]
 
-drawWorld :: (Int, Int) -> World -> Picture
-drawWorld (xdim, ydim) = Translate xtrans ytrans . Pictures . map drawBoid
+drawWorld :: (Int, Int) -> BoidArtist -> World -> Picture
+drawWorld (xdim, ydim) draw = Translate xtrans ytrans . Pictures . map draw
   where xtrans = - fromIntegral xdim / 2
         ytrans = - fromIntegral ydim / 2
+
+-- Main simulation loop -------------------------------------------------------
 
 advanceWorld :: (Int, Int) -> Action -> ViewPort -> Float -> World -> World
 advanceWorld dims step _ _ = boundsCheck dims . update step
@@ -87,11 +100,11 @@ main = do
   -- Here we thread startOptions through all supplied option actions
   opts <- foldl (>>=) (return defaultOptions) actions
 
-  let Options { optDebug  = debug
-              , optMode   = mode
-              , optHeight = height
-              , optWidth  = width
-              , optNumber = number
+  let Options { optDrawMode = mode
+              , optStep     = step
+              , optHeight   = height
+              , optWidth    = width
+              , optNumber   = number
               } = opts
 
   let dims = (height, width)
@@ -103,5 +116,5 @@ main = do
     (greyN 0.7)  -- background color
     30           -- updates per second
     (initWorld $ zip pos_x pos_y)
-    (drawWorld dims)
-    (advanceWorld dims mode)
+    (drawWorld dims mode)
+    (advanceWorld dims step)
