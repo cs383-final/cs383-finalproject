@@ -68,9 +68,10 @@ type BoidArtist = Boid -> Picture
 
 drawPretty :: BoidArtist
 drawPretty (Boid (V2 xpos ypos) (V2 xvel yvel) rad) =
-  Translate xpos ypos $
-  Pictures [ Circle 2 -- todo: make fancy
-           ]
+  Translate xpos ypos $ Rotate theta $ Polygon [(5,0), (-5,0), (0,5)]
+  where theta = (atan2 xdiff ydiff) * (180 / pi)
+        xdiff = xvel - xpos
+        ydiff = yvel - ypos
 
 drawDebug :: BoidArtist
 drawDebug (Boid (V2 xpos ypos) (V2 xvel yvel) rad) =
