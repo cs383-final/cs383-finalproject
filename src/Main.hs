@@ -17,11 +17,15 @@ import System.Exit
 data Options = Options
   { optDebug       :: Bool
   , optMode        :: Action
+  , optHeight      :: Int
+  , optWidth       :: Int
   }
 
 defaultOptions  = Options
   { optDebug    = False
   , optMode     = eqWeightStep
+  , optHeight   = 800
+  , optWidth    = 800
   }
 
 options :: [OptDescr (Options -> IO Options)]
@@ -37,8 +41,14 @@ options =
       "swarming behaviour"
   , Option ['e'] ["equal"]
       (NoArg (\ opts -> return opts { optMode = eqWeightStep}))
-      "equal weighted behavioir"
-  , Option "h" ["help"]
+      "equal weighted behaviour"
+  , Option ['h'] ["height"]
+      (ReqArg (\x opts -> return opts { optHeight = read x :: Int}) "HEIGHT")
+      "window height"
+  , Option ['w'] ["width"]
+      (ReqArg (\x opts -> return opts { optWidth = read x :: Int}) "WIDTH")
+      "window width"
+  , Option "l" ["help"]
         (NoArg
             (\_ -> do
                 putStrLn (usageInfo "Boids" options)
@@ -81,10 +91,13 @@ main = do
   -- Here we thread startOptions through all supplied option actions
   opts <- foldl (>>=) (return defaultOptions) actions
 
-  let Options { optDebug = verbose
-              , optMode  = mode } = opts
+  let Options { optDebug  = verbose
+              , optMode   = mode
+              , optHeight = height
+              , optWidth  = width
+              } = opts
 
-  let dims = (1000, 800)
+  let dims = ((optHeight opts), (optWidth opts))
 
   pos_x <- evalRandIO (initPos 20)
   pos_y <- evalRandIO (initPos 20)
