@@ -22,6 +22,8 @@ type Action = World -> Boid -> Boid
 update :: Action -> World -> World
 update a w = map (a w) w
 
+-- |Check if a point in a 3D space is within a given radius of
+--  another 3D point.
 inSphere :: V3 Float -> Radius -> V3 Float -> Bool
       -- :: V3 Float -> Float -> V3 Float -> Bool
 inSphere p_0 r p_i = ((x_i - x)^n + (y_i - y)^n + (z_i - z)^n) <= r^n
@@ -33,6 +35,8 @@ inSphere p_0 r p_i = ((x_i - x)^n + (y_i - y)^n + (z_i - z)^n) <= r^n
           z   = p_0 ^._z
           n   = 2 :: Integer
 
+-- |Check if a point in a 2D space is within a given radius of
+--  another 2D point.
 inCircle :: Point -> Radius -> Point -> Bool
       -- :: V2 Float -> Radius -> V2 Float -> Bool
 inCircle p_0 r p_i = ((x_i - x)^n + (y_i - y)^n) <= r^n
@@ -73,6 +77,7 @@ initWorld = map mkBoid
 inBounds :: Float -> Float -> Float
 inBounds bound = until (< bound) (subtract bound) . until (0 <=) (+ bound)
 
+-- |Perform toroidal bounds checking on a 'World' given a height and width.
 boundsCheck :: (Int, Int) -> World -> World
 boundsCheck (width, height) = map modBoid
   where modBoid b@(Boid (V2 x y) _ _) = b { position = V2 (inWidth x) (inHeight y) }

@@ -58,7 +58,7 @@ options =
             (\_ -> do
                 putStrLn (usageInfo "Boids" options)
                 exitWith ExitSuccess))
-        "Show help"
+        "Show this help file"
   ]
 
 drawBoid :: Boid -> Picture
