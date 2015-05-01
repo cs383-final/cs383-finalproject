@@ -1,0 +1,61 @@
+{
+	"folders":
+	[
+        {
+            "path": ".",
+            "file_exclude_patterns":
+            [
+                "*.fls",
+                "*.out",
+                "*.nav",
+                "*.log",
+                "*.aux",
+                "*.toc",
+                "*.vrb",
+                "*.snm",
+                "*.synctex.gz",
+                "*.fdb_latexmk",
+                "*.bbl",
+                "*.bcf",
+                "*.blg",
+                "*.run.xml",
+                "*.ps",
+                "*.ps~",
+                "Icon"
+            ],
+            "folder_exclude_patterns":
+            [
+                ".cabal-sandbox",
+                "dist",
+                "doc",
+                "src"
+            ]
+        },
+		{
+			"path": "src"
+		},
+        {
+            "path": "doc",
+            "file_exclude_patterns":
+            [
+                "*.fls",
+                "*.out",
+                "*.nav",
+                "*.log",
+                "*.aux",
+                "*.toc",
+                "*.vrb",
+                "*.snm",
+                "*.synctex.gz",
+                "*.fdb_latexmk",
+                "*.bbl",
+                "*.bcf",
+                "*.blg",
+                "*.run.xml",
+                "*.ps",
+                "*.ps~",
+                "Icon"
+            ],
+        },
+	]
+}

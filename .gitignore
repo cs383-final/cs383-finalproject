@@ -92,3 +92,5 @@ cabal.sandbox.config
 *.vrb
 *.xdy
 *.tdo
+
+*.sublime-workspace
