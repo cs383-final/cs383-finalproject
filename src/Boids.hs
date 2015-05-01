@@ -127,3 +127,13 @@ alignment _ []        = V2 0 0
 alignment _ neighbors =
     let m = fromIntegral $ length neighbors :: Float
     in (sumV $ map velocity neighbors) ^/ m
+
+distance :: Vector -> Vector -> Float
+distance (V2 x1 y1) (V2 x2 y2) = sqrt $ (x1 - x2)^2 + (y1 - y2)^2
+
+eccentricity :: Boid -> Perception -> Float
+eccentricity self neighbors =
+    let p = position self
+        c = centre neighbors
+        e = radius self
+    in (distance p c) / e
