@@ -51,9 +51,10 @@ inCircle p_0 r p_i = ((x_i - x)^n + (y_i - y)^n) <= r^n
 -- |Find the neighborhood for a given 'Boid'
 neighborhood :: World -> Boid -> Perception
           -- :: [Boid] -> Boid -> [Boid]
-neighborhood world self = filter (inCircle cent rad . position) world
+neighborhood world self = filter (inCircle cent rad . position) others
     where cent = position self
           rad  = radius self
+          others = filter (/= self) world
 
 emptyStep :: Step
 emptyStep s w b = emptyBehaviour s (neighborhood w b) b

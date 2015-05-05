@@ -16,7 +16,7 @@ data Boid = Boid { position :: !Point
                  , velocity :: !Vector
                  , radius   :: !Radius
                  }
-  deriving (Show)
+  deriving (Show, Eq)
 
 -- | An Update function maps a 'Boid' to a new 'Boid'.
 type Update     = Boid -> Boid
@@ -93,6 +93,7 @@ centre boids =
 -- negative sum of these vectors.
 separation :: Boid -> Perception -> Vector
         -- :: Boid -> [Boid]     -> V3 Float
+separation _ [] = V2 0 0
 separation self neighbors =
     let p = position self
     in negated $ sumV $ map (^-^ p) $ positions neighbors
@@ -108,6 +109,7 @@ separation self neighbors =
 -- by subtracting the current position /p/i from /c/i
 cohesion :: Boid -> Perception -> Vector
       -- :: Boid -> [Boid]     -> V2 Float
+cohesion _ [] = V2 0 0
 cohesion self neighbors =
     let p = position self
     in centre neighbors ^-^ p
@@ -124,6 +126,7 @@ cohesion self neighbors =
 alignment :: Boid -> Perception -> Vector
        -- :: Boid -> [Boid]     -> V2 Float
 alignment _ []        = V2 0 0
-alignment _ neighbors =
+alignment b neighbors =
     let m = fromIntegral $ length neighbors :: Float
-    in (sumV $ map velocity neighbors) ^/ m
+        total = sumV (map velocity neighbors) ^/ m
+    in total ^-^ velocity b
