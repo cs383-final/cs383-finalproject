@@ -33,24 +33,38 @@
 \usepackage{graphicx}
 \usepackage{latexsym}
 \usepackage{color}
-\usepackage{listings}
-\usepackage{fancyvrb}
 \usepackage{booktabs}
-\usepackage{graphicx}
 \usepackage{caption,subcaption}
 \usepackage[toc,page]{appendix}
-\usepackage{cite}
 \usepackage{placeins}
 \usepackage[compatibility=false]{caption}
 \usepackage{subcaption}
+
+%% -- Referencing --%
 \usepackage{hyperref}
 \usepackage{cleveref}
+\usepackage[
+    backend=bibtex,
+    style=numeric,
+    sortcites=true,
+    sorting=nty,
+    backref,
+    natbib,
+    hyperref
+]{biblatex}
+
 \usepackage{lmodern}
 \usepackage{placeins}
+
+%% -- Source code listings and pseudocode --%
+\usepackage{listings}
+\usepackage{fancyvrb}
 \usepackage{syntax}
 \usepackage{minted}
 \usepackage[noend]{algorithmic}
 \usepackage[noend]{algorithm}
+
+
 \usepackage[nottoc,numbib]{tocbibind}
 \usepackage[margin=1in]{geometry} 
 \usepackage{amsmath,amsthm,amssymb}
@@ -148,4 +162,3 @@
 \newcommand{\HANDIN}{\par\noindent\hspace{-.25in}{\bf Hand in:\ }}
 \newcommand{\SUBHEAD}[1]{\bigskip\par\noindent\hspace{-.1in}{\sc #1}\\}
 \newenvironment{CHECKLIST}{\begin{itemize}}{\end{itemize}}
-
